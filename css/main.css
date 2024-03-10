@@ -1,0 +1,239 @@
+@font-face {
+  font-family: "Mona Sans";
+  src: url("fonts/Mona-Sans.woff2");
+}
+
+:root {
+  --white: #ffffff;
+  --offwhite: #f8f8fc;
+  --lightgray: #d5d5d5;
+  --black: #09090f;
+  --dark: #151520;
+  --darker: #0f0f1a;
+  --bg: #181826;
+  --lightbg: #1e1e2a;
+  --lighterbg: #20202c;
+  --evenlighterbg: #2f2f40;
+  --accent: #5893c2;
+  --warn: #db373c;
+  --good: #86db37;
+}
+
+* {
+  font-family: "Mona Sans", sans-serif;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--white);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-weight: 500;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  padding: 10px;
+  box-shadow: 0px 0px 3px 0px #000;
+  z-index: 5;
+}
+
+header h2 {
+  font-size: 1em;
+  color: var(--lightgray);
+  font-weight: 600;
+  display: flex;
+  gap: 4px;
+}
+
+header h2 .current-server-name {
+  font-weight: 700;
+  color: var(--offwhite);
+}
+
+header h2 svg:hover {
+  color: var(--white);
+}
+
+main {
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 0;
+  flex-grow: 1;
+}
+
+main .channels {
+  flex-basis: 20%;
+  max-width: 280px;
+  overflow: auto;
+}
+
+main .messages {
+  flex-grow: 1;
+  background: var(--lightbg);
+  overflow: auto;
+}
+
+main .members {
+  flex-basis: 20%;
+  max-width: 280px;
+  overflow: auto;
+}
+
+.channels,
+.members {
+  background: var(--dark);
+}
+
+main .left-section {
+  border-right: 2px solid var(--darker);
+  display: flex;
+  flex-direction: column;
+}
+
+main .right-section {
+  border-left: 2px solid var(--darker);
+  display: flex;
+  flex-direction: column;
+}
+
+.section-heading {
+  font-size: 16px;
+  padding: 15px 10px 5px 10px;
+  color: var(--offwhite);
+}
+
+
+footer {
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 5px;
+  justify-content: space-between;
+}
+
+footer section {
+  display: flex;
+  gap: 2px;
+}
+
+footer .left-section, footer .right-section {
+  flex-basis: 20%;
+  max-width: 280px;
+  overflow: auto;
+  align-items: center;
+}
+
+footer .left-section {
+  padding-right: 8px;
+}
+
+footer .right-section {
+  padding-left: 8px;
+}
+
+footer .middle-section {
+  flex-grow: 1;
+}
+
+footer #chat-input-container {
+  flex-grow: 1;
+  background: var(--evenlighterbg);
+  color: var(--offwhite);
+  padding: 0px 8px;
+  border-radius: 6px;
+  display: flex;
+}
+
+footer #chat-input-container button {
+  padding: 0px;
+}
+
+footer #chat-input-container button:hover {
+  background: none;
+}
+
+footer #chat-input-container #chat-input {
+  flex-grow: 1;
+  outline: none;
+  border: none;
+  background: none;
+  padding: 8px 6px;
+  border-radius: 6px;
+  color: var(--offwhite);
+}
+
+/*
+  Scrollbar
+*/
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--darker);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--dark);
+}
+
+/*
+  Util
+*/
+.no-bg {
+  background: none;
+}
+
+/*
+  Button
+*/
+button {
+  display: flex;
+  align-items: center;
+  outline: none;
+  border: none;
+  color: var(--lightgray);
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--evenlighterbg);
+}
