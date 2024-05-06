@@ -68,7 +68,7 @@ export class TextMessageElement extends BaseElement {
 
         if (memberEl instanceof HTMLElement) {
             if (this.content.member !== undefined) {
-                memberEl.textContent = app.members.get(this.content.member.id)?.displayName ?? ''
+                memberEl.textContent = app.members.get(this.content.member.id)?.display_name ?? ''
             }
             memberEl.dataset.id = this.content.member?.id ?? memberEl.dataset.id
         }

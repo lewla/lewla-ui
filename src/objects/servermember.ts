@@ -4,16 +4,16 @@ import type { ServerMember as ServerMemberInterface } from '../interfaces/server
 export class ServerMember implements ServerMemberInterface {
     public id: string
     public type: 'user' | 'bot'
-    public displayName: string
-    public avatar: string
+    public display_name: string
+    public avatar_url: string
 
     private _element?: ServerMemberElement
 
     constructor (member: ServerMemberInterface, element?: ServerMemberElement) {
         this.id = member.id
         this.type = member.type
-        this.displayName = member.displayName
-        this.avatar = member.avatar
+        this.display_name = member.display_name
+        this.avatar_url = member.avatar_url ?? 'resources/images/256.png'
 
         if (element !== undefined) this._element = element
     }

@@ -5,7 +5,7 @@ import type { Message } from './message.js'
 
 export class Channel implements ChannelInterface {
     public id: string
-    public displayName: string
+    public name: string
     public type: 'text' | 'voice'
     public order: number
     public messages: Map<string, Message>
@@ -14,7 +14,7 @@ export class Channel implements ChannelInterface {
 
     constructor (channel: ChannelInterface, messages?: Map<string, Message>, element?: TextChannelElement | VoiceChannelElement) {
         this.id = channel.id
-        this.displayName = channel.displayName
+        this.name = channel.name
         this.type = channel.type
         this.order = channel.order
         this.messages = messages ?? new Map()

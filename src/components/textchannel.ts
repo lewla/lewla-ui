@@ -55,7 +55,7 @@ export class TextChannelElement extends BaseElement {
         super(templateElement)
 
         if (channel !== undefined) {
-            this.setAttribute('display-name', channel.displayName)
+            this.setAttribute('display-name', channel.name)
             this.setAttribute('order', channel.order.toString())
             this.setAttribute('id', channel.id)
         }

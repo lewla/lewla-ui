@@ -65,8 +65,8 @@ export class ServerMemberElement extends BaseElement {
         super(templateElement)
 
         if (member !== undefined) {
-            this.setAttribute('display-name', member.displayName)
-            this.setAttribute('avatar', member.avatar)
+            this.setAttribute('display-name', member.display_name)
+            this.setAttribute('avatar', member.avatar_url)
         }
     }
 }
