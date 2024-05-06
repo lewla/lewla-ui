@@ -1,6 +1,8 @@
 import { ChannelListElement, MemberListElement, MessageListElement, TextChannelElement } from '../components/index.js'
 import type { ServerMember } from '../objects/servermember.js'
 import type { Channel } from '../objects/channel.js'
+import { actions } from '../actions/index.js'
+import { type BaseAction } from '../actions/base.js'
 
 /**
  * The application class
@@ -9,19 +11,46 @@ export class Application {
     public ws: WebSocket | undefined
     public channels: Map<string, Channel>
     public members: Map<string, ServerMember>
+    public actions: Map<string, typeof BaseAction>
     public serverName: string
     public rootElement: HTMLElement | null
 
     constructor () {
         this.channels = new Map()
         this.members = new Map()
+        this.actions = actions
         this.serverName = 'lew.la official'
         this.rootElement = document.getElementById('app')
     }
 
     public init (websocketUrl: string): void {
-        console.log('Initialised')
-        // this.ws = new WebSocket(websocketUrl);
+        this.ws = new WebSocket(websocketUrl)
+        this.ws.addEventListener('message', (event) => {
+            if (this.ws === undefined) {
+                throw new Error('WebSocket not initialized')
+            }
+            if (typeof event.data !== 'string') {
+                throw new Error('Invalid payload')
+            }
+            const decoded = JSON.parse(event.data) ?? {}
+            const messageAction = decoded.action
+            const messageData = decoded.data ?? null
+
+            if (
+                typeof messageAction !== 'string' ||
+                messageData === null
+            ) {
+                throw new Error('No action provided')
+            }
+
+            const Action = this.actions.get(messageAction.toLowerCase())
+            if (Action == null) {
+                throw new Error('Unsupported action: ' + messageAction)
+            }
+
+            const action = new Action(this.ws, { data: messageData })
+            action.handle()
+        })
     }
 
     public loadUI (): void {
