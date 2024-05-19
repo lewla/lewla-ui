@@ -40,7 +40,7 @@ templateElement.innerHTML = /* HTML */`
         }
     </style>
     <div class='channel'>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 3L6 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M20.5 16H2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M22 7H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M18 3L14 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M10 3L6 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M20.5 16H2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M22 7H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M18 3L14 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
         <span class='display-name'><slot name="display-name">Unknown Channel</slot></span>
     </div>
 `

@@ -6,6 +6,7 @@ export class ServerMember implements ServerMemberInterface {
     public type: 'user' | 'bot'
     public display_name: string
     public avatar_url: string
+    public status: 'online' | 'offline' | 'busy' | 'away'
 
     private _element?: ServerMemberElement
 
@@ -14,6 +15,11 @@ export class ServerMember implements ServerMemberInterface {
         this.type = member.type
         this.display_name = member.display_name
         this.avatar_url = member.avatar_url ?? 'resources/images/256.png'
+
+        if (member.status == null || !['online', 'offline', 'busy', 'away'].includes(member.status)) {
+            member.status = 'offline'
+        }
+        this.status = member.status
 
         if (element !== undefined) this._element = element
     }

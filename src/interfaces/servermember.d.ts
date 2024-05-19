@@ -3,4 +3,5 @@ export interface ServerMember {
     type: 'user' | 'bot'
     display_name: string
     avatar_url: string
+    status: 'online' | 'offline' | 'busy' | 'away'
 }
