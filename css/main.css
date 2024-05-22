@@ -7,6 +7,7 @@
   --white: #ffffff;
   --offwhite: #f8f8fc;
   --lightgray: #d5d5d5;
+  --lightergray: #a3a3a8;
   --black: #09090f;
   --dark: #151520;
   --darker: #0f0f1a;
@@ -22,6 +23,13 @@
 * {
   font-family: "Mona Sans", sans-serif;
   box-sizing: border-box;
+}
+
+[contenteditable=true]:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block;
+  color: var(--lightergray);
 }
 
 html,
@@ -185,6 +193,8 @@ footer #chat-input-container #chat-input {
   padding: 8px 6px;
   border-radius: 6px;
   color: var(--offwhite);
+  font-size: 0.9em;
+  line-height: 20px;
 }
 
 /*
