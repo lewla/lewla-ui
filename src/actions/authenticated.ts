@@ -14,8 +14,8 @@ export class AuthenticatedAction extends BaseAction {
     public static identifier = 'authenticated'
     public body: { data: AuthenticatedData }
 
-    constructor (sender: WebSocket, body: { data: AuthenticatedData }) {
-        super(sender, body)
+    constructor (target: WebSocket, body: { data: AuthenticatedData }) {
+        super(target, body)
         this.body = body
 
         if (

@@ -8,8 +8,8 @@ export class SuccessAction extends BaseAction {
     public static identifier = 'success'
     public body: { data: SuccessData }
 
-    constructor (sender: WebSocket, body: { data: SuccessData }) {
-        super(sender, body)
+    constructor (target: WebSocket, body: { data: SuccessData }) {
+        super(target, body)
         this.body = body
 
         if (

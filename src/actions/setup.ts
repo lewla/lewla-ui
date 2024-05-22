@@ -14,8 +14,8 @@ export class SetupAction extends BaseAction {
     public static identifier = 'setup'
     public body: { data: SetupData }
 
-    constructor (sender: WebSocket, body: { data: SetupData }) {
-        super(sender, body)
+    constructor (target: WebSocket, body: { data: SetupData }) {
+        super(target, body)
         this.body = body
     }
 
