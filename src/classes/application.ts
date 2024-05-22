@@ -3,6 +3,8 @@ import type { ServerMember } from '../objects/servermember.js'
 import type { Channel } from '../objects/channel.js'
 import { actions } from '../actions/index.js'
 import { type BaseAction } from '../actions/base.js'
+import { PingAction } from '../actions/ping.js'
+import { AuthAction } from '../actions/auth.js'
 
 /**
  * The application class
@@ -18,6 +20,9 @@ export class Application {
     constructor () {
         this.channels = new Map()
         this.members = new Map()
+        /**
+         * Map of actions that can be handled by the Client
+         */
         this.actions = actions
         this.serverName = 'lew.la official'
         this.rootElement = document.getElementById('app')
@@ -50,6 +55,19 @@ export class Application {
 
             const action = new Action(this.ws, { data: messageData })
             action.handle()
+        })
+        this.ws.addEventListener('open', (event) => {
+            setInterval(() => {
+                if (this.ws === undefined || this.ws?.readyState !== this.ws?.OPEN) {
+                    return
+                }
+                new PingAction(this.ws, { data: { timestamp: Date.now() } }).send()
+            }, 30000)
+
+            if (this.ws === undefined || this.ws?.readyState !== this.ws?.OPEN) {
+                return
+            }
+            new AuthAction(this.ws, { data: { token: window.localStorage.getItem('authtoken') ?? '' } }).send()
         })
     }
 

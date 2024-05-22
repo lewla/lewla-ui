@@ -8,8 +8,8 @@ export class PongAction extends BaseAction {
     public static identifier = 'pong'
     public body: { data: PongData }
 
-    constructor (sender: WebSocket, body: { data: PongData }) {
-        super(sender, body)
+    constructor (target: WebSocket, body: { data: PongData }) {
+        super(target, body)
         this.body = body
 
         if (

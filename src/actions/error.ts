@@ -8,8 +8,8 @@ export class ErrorAction extends BaseAction {
     public static identifier = 'error'
     public body: { data: ErrorData }
 
-    constructor (sender: WebSocket, body: { data: ErrorData }) {
-        super(sender, body)
+    constructor (target: WebSocket, body: { data: ErrorData }) {
+        super(target, body)
         this.body = body
 
         if (

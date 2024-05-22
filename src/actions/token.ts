@@ -1,3 +1,4 @@
+import { AuthAction } from './auth.js'
 import { BaseAction } from './base.js'
 
 interface TokenData {
@@ -8,8 +9,8 @@ export class TokenAction extends BaseAction {
     public static identifier = 'token'
     public body: { data: TokenData }
 
-    constructor (sender: WebSocket, body: { data: TokenData }) {
-        super(sender, body)
+    constructor (target: WebSocket, body: { data: TokenData }) {
+        super(target, body)
         this.body = body
 
         if (
@@ -20,11 +21,7 @@ export class TokenAction extends BaseAction {
     }
 
     public handle (): void {
-        this.sender.send(JSON.stringify({
-            action: 'auth',
-            data: {
-                token: this.body.data.token
-            }
-        }))
+        window.localStorage.setItem('authtoken', this.body.data.token)
+        new AuthAction(this.target, { data: { token: this.body.data.token } }).send()
     }
 }
