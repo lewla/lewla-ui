@@ -120,12 +120,14 @@ main .left-section {
   border-right: 2px solid var(--darker);
   display: flex;
   flex-direction: column;
+  min-width: 120px;
 }
 
 main .right-section {
   border-left: 2px solid var(--darker);
   display: flex;
   flex-direction: column;
+  min-width: 120px;
 }
 
 .section-heading {
@@ -175,6 +177,8 @@ footer #chat-input-container {
   padding: 0px 8px;
   border-radius: 6px;
   display: flex;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 footer #chat-input-container button {
@@ -221,6 +225,14 @@ footer #chat-input-container #chat-input {
 
 ::-webkit-scrollbar-corner {
   background: var(--dark);
+}
+
+#chat-input-container::-webkit-scrollbar-track {
+  background: #ffffff0f;
+}
+
+#chat-input-container::-webkit-scrollbar-thumb {
+  background: #00000f;
 }
 
 /*

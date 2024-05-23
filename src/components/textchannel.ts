@@ -24,9 +24,17 @@ templateElement.innerHTML = /* HTML */`
             background: var(--lightbg);
             color: var(--white);
         }
-        .channel:active {
+        .channel:active, :host([selected="true"]) .channel {
             background: var(--lighterbg);
             color: var(--white);
+        }
+        :host([unread="true"]) .channel {
+            border-right: 4px solid var(--lightergray)
+        }
+        :host([selected="true"]) .channel {
+            background: var(--lighterbg);
+            color: var(--white);
+            border-left: 4px solid var(--accent);
         }
         .channel .display-name {
             font-weight: 500;

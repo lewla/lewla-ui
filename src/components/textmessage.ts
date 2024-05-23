@@ -9,6 +9,7 @@ templateElement.innerHTML = /* HTML */`
             display: flex;
             gap: 5px;
             padding: 10px;
+            box-sizing: border-box;
         }
         .message:hover {
             background: var(--lighterbg);
@@ -30,6 +31,9 @@ templateElement.innerHTML = /* HTML */`
             display: flex;
             flex-direction: column;
             gap: 3px;
+            overflow: hidden;
+            overflow-wrap: break-word;
+            flex-grow: 1;
         }
     </style>
     <div class="message" data-id="">
