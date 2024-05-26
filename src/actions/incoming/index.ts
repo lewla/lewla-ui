@@ -1,10 +1,11 @@
-import { type BaseAction } from './base.js'
+import { type BaseAction } from '../base.js'
 import { TokenAction } from './token.js'
 import { ErrorAction } from './error.js'
 import { SuccessAction } from './success.js'
 import { AuthenticatedAction } from './authenticated.js'
 import { SetupAction } from './setup.js'
 import { PongAction } from './pong.js'
+import { MessageAction } from './message.js'
 
 export const actions = new Map<string, typeof BaseAction>([
     [TokenAction.identifier, TokenAction],
@@ -13,4 +14,5 @@ export const actions = new Map<string, typeof BaseAction>([
     [AuthenticatedAction.identifier, AuthenticatedAction],
     [SetupAction.identifier, SetupAction],
     [PongAction.identifier, PongAction],
+    [MessageAction.identifier, MessageAction],
 ])

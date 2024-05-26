@@ -1,5 +1,5 @@
-import { AuthAction } from './auth.js'
-import { BaseAction } from './base.js'
+import { AuthAction } from '../outgoing/auth.js'
+import { BaseAction } from '../base.js'
 
 interface TokenData {
     token: string
