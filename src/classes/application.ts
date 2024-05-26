@@ -1,10 +1,12 @@
 import { ChannelListElement, MemberListElement, MessageListElement, TextChannelElement } from '../components/index.js'
 import type { ServerMember } from '../objects/servermember.js'
 import type { Channel } from '../objects/channel.js'
-import { actions } from '../actions/index.js'
+import { actions } from '../actions/incoming/index.js'
 import { type BaseAction } from '../actions/base.js'
-import { PingAction } from '../actions/ping.js'
-import { AuthAction } from '../actions/auth.js'
+import { PingAction } from '../actions/outgoing/ping.js'
+import { AuthAction } from '../actions/outgoing/auth.js'
+import { createDB } from '../db/index.js'
+import { MessageAction } from '../actions/outgoing/message.js'
 
 /**
  * The application class
@@ -30,6 +32,7 @@ export class Application {
 
     public init (websocketUrl: string): void {
         this.ws = new WebSocket(websocketUrl)
+        createDB()
         this.ws.addEventListener('message', (event) => {
             if (this.ws === undefined) {
                 throw new Error('WebSocket not initialized')
@@ -147,10 +150,32 @@ export class Application {
                 if (event.target.innerHTML === '<br>') event.target.innerHTML = ''
             }
         })
+
         document.getElementById('chat-input')?.addEventListener('keydown', (event) => {
+            if (this.ws === undefined) {
+                return
+            }
             if (event.target instanceof HTMLElement) {
                 if ((event.key === 'Enter' || event.key === 'NumpadEnter') && !event.shiftKey) {
-                    console.log(event.target.innerHTML)
+                    const channelId = document.querySelector('channel-list')?.shadowRoot?.querySelector('text-channel[selected="true"]')?.getAttribute('id')
+                    if (channelId == null) {
+                        return
+                    }
+
+                    const message = new MessageAction(
+                        this.ws,
+                        {
+                            data: {
+                                channel: channelId,
+                                type: 'text',
+                                body: {
+                                    text: event.target.innerHTML
+                                }
+                            }
+                        }
+                    )
+                    message.send()
+
                     event.target.innerHTML = ''
                     event.preventDefault()
                 }

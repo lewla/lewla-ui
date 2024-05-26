@@ -1,4 +1,4 @@
-import { BaseAction } from './base.js'
+import { BaseAction } from '../base.js'
 
 interface AuthData {
     token: string
