@@ -103,6 +103,7 @@ main .messages {
   flex-grow: 1;
   background: var(--lightbg);
   overflow: auto;
+  flex-basis: 100%;
 }
 
 main .members {
