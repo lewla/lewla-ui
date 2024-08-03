@@ -1,36 +1,71 @@
 import { BaseElement } from '../classes/baseelement.js'
 import { TextMessageElement } from './textmessage.js'
-import type { Message } from '../objects/message.js'
+import type { Message as MessageInterface } from '../interfaces/message.js'
+import { app } from '../index.js'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
     <style>
         :host {
             flex-grow: 1;
-            height: 0;
             overflow: auto;
             padding-top: 4px;
+            height: 100%;
+            display: none;
+        }
+        :host([active="true"]) {
+            display: block;
         }
     </style>
 `
 
 export class MessageListElement extends BaseElement {
-    static observedAttributes = []
+    static observedAttributes = [
+        'scrolling-paused'
+    ]
 
     constructor () {
         super(templateElement)
     }
 
-    loadContent (messages: Map<string, Message> | null): void {
+    attributeChangedCallback (name: string, oldValue: string | null, newValue: string | null): void {}
+
+    loadContent (messages: Map<string, MessageInterface> | null): void {
         this.shadowRoot?.querySelectorAll('text-message').forEach(el => { el.remove() })
         if (messages === null) { return }
         messages.forEach(
             (message) => {
                 const el = new TextMessageElement(message)
-                message.element = el
-                this.shadowRoot?.appendChild(el)
+                this.addItem(el)
             }
         )
+    }
+
+    addItem (item: TextMessageElement): void {
+        const prevMember = this.shadowRoot?.lastElementChild?.getAttribute('member')
+
+        if (prevMember === item.getAttribute('member')) {
+            const prevTimestamp = this.shadowRoot?.lastElementChild?.getAttribute('timestamp')
+            const newTimestamp = item.getAttribute('timestamp')
+
+            if (prevTimestamp != null && newTimestamp != null) {
+                const prevDate = new Date(prevTimestamp)
+                const newDate = new Date(newTimestamp)
+                const difference = newDate.getTime() - prevDate.getTime()
+                if (difference <= (3 * 60 * 1000)) {
+                    item.collapse()
+                }
+            }
+        }
+
+        this.shadowRoot?.appendChild(item)
+
+        if (
+            item.getAttribute('member') === app.currentMember?.id ||
+            this.getAttribute('scrolling-paused') !== 'true'
+        ) {
+            this.scrollTop = this.scrollHeight
+        }
     }
 }
 

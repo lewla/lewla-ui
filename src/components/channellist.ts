@@ -29,6 +29,10 @@ export class ChannelListElement extends BaseElement {
                 if (channel.type === 'text') {
                     const el = new TextChannelElement(channel)
                     channel.element = el
+                    if (el.id === window.localStorage.getItem('selected-text-channel')) {
+                        el.setAttribute('selected', 'true')
+                        document.querySelector('message-list[channel="' + el.getAttribute('id') + '"]')?.setAttribute('active', 'true')
+                    }
                     this.shadowRoot?.appendChild(el)
                 } else if (channel.type === 'voice') {
                     const el = new VoiceChannelElement(channel)

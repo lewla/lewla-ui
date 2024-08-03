@@ -2,6 +2,10 @@ import { BaseElement } from '../classes/baseelement.js'
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
     <style>
+        :host {
+            display: flex;
+            height: fit-content;
+        }
         .button {
             cursor: pointer;
             display: flex;
@@ -19,6 +23,7 @@ templateElement.innerHTML = /* HTML */`
             user-select: none;
         }
         /* Padding */
+        :host(.p-0) .button { padding: 0px }
         :host(.p-6) .button { padding: 6px }
         /* Border Radius */
         :host(.round)  .button { border-radius: 5px }

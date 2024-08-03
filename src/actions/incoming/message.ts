@@ -1,5 +1,4 @@
-import { TextMessageElement } from '../../components/textmessage.js'
-import { storeData } from '../../db/index.js'
+import { Message } from '../../objects/message.js'
 import { app } from '../../index.js'
 import { BaseAction } from '../base.js'
 
@@ -31,7 +30,8 @@ export class MessageAction extends BaseAction {
             typeof this.body.data.type !== 'string' ||
             typeof this.body.data.timestamp !== 'string' ||
             typeof this.body.data.member !== 'string' ||
-            this.body.data.body == null
+            typeof this.body.data.id !== 'string' ||
+            this.body.data?.body == null
         ) {
             throw new Error('Invalid payload')
         }
@@ -48,14 +48,16 @@ export class MessageAction extends BaseAction {
             return
         }
 
-        storeData('message', this.body.data)
-            .catch((error) => {
-                console.log(error)
-            })
-
-        if (channel.element?.getAttribute('selected') === 'true') {
-            const message = new TextMessageElement({ id: this.body.data.id, member, body: { text: this.body.data.body.text ?? '' } })
-            document.querySelector('message-list')?.shadowRoot?.appendChild(message)
-        }
+        const message = new Message({
+            id: this.body.data.id,
+            member: member.id,
+            channel: channel.id,
+            timestamp: this.body.data.timestamp,
+            type: this.body.data.type,
+            body: this.body.data.body
+        })
+        channel.messages.set(message.id, message)
+        message.store()
+        message.display()
     }
 }

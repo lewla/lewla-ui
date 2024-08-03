@@ -1,3 +1,4 @@
+import { app } from '../../index.js'
 import { BaseAction } from '../base.js'
 
 interface AuthenticatedData {
@@ -29,6 +30,6 @@ export class AuthenticatedAction extends BaseAction {
     }
 
     public handle (): void {
-        console.log(this.body.data.member)
+        app.currentMember = app.members.get(this.body.data.member.id)
     }
 }
