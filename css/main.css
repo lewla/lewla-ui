@@ -25,13 +25,6 @@
   box-sizing: border-box;
 }
 
-[contenteditable=true]:empty:before {
-  content: attr(placeholder);
-  pointer-events: none;
-  display: block;
-  color: var(--lightergray);
-}
-
 html,
 body {
   margin: 0;
@@ -42,6 +35,7 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--white);
+  accent-color: var(--accent);
 }
 
 h1,
@@ -102,8 +96,9 @@ main .channels {
 main .messages {
   flex-grow: 1;
   background: var(--lightbg);
-  overflow: auto;
+  overflow: hidden;
   flex-basis: 100%;
+  display: flex;
 }
 
 main .members {
@@ -180,6 +175,8 @@ footer #chat-input-container {
   display: flex;
   max-height: 200px;
   overflow-y: auto;
+  border: 5px solid transparent;
+  align-items: center;
 }
 
 footer #chat-input-container button {
@@ -211,29 +208,29 @@ footer #chat-input-container #chat-input {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--dark);
+  background: #4646587a;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--darker);
+  background: #535363bf;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--black);
+  background: #6a6a7cbf;
 }
 
 ::-webkit-scrollbar-corner {
-  background: var(--dark);
+  background: #4646587a;
 }
 
 #chat-input-container::-webkit-scrollbar-track {
-  background: #ffffff0f;
+  background: #4646587a;
 }
 
 #chat-input-container::-webkit-scrollbar-thumb {
-  background: #00000f;
+  background: #535363bf;
 }
 
 /*

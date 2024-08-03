@@ -1,7 +1,6 @@
 import { BaseElement } from '../classes/baseelement.js'
 import { MessageListElement } from './messagelist.js'
-import type { Channel } from '../interfaces/channel.js'
-import { app } from '../index.js'
+import type { Channel as ChannelInterface } from '../interfaces/channel.js'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
@@ -9,7 +8,7 @@ templateElement.innerHTML = /* HTML */`
         .channel {
             color: var(--lightgray);
             display: block;
-            padding: 8px 6px;
+            padding: 8px 3px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
@@ -19,6 +18,8 @@ templateElement.innerHTML = /* HTML */`
             cursor: pointer;
             border-radius: 3px;
             user-select: none;
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
         }
         .channel:hover {
             background: var(--lightbg);
@@ -29,12 +30,12 @@ templateElement.innerHTML = /* HTML */`
             color: var(--white);
         }
         :host([unread="true"]) .channel {
-            border-right: 4px solid var(--lightergray)
+            border-right-color: var(--lightergray)
         }
         :host([selected="true"]) .channel {
             background: var(--lighterbg);
             color: var(--white);
-            border-left: 4px solid var(--accent);
+            border-left-color: var(--accent);
         }
         .channel .display-name {
             font-weight: 500;
@@ -59,7 +60,7 @@ export class TextChannelElement extends BaseElement {
         'selected'
     ]
 
-    constructor (channel?: Channel) {
+    constructor (channel?: ChannelInterface) {
         super(templateElement)
 
         if (channel !== undefined) {
@@ -88,17 +89,13 @@ export class TextChannelElement extends BaseElement {
     }
 
     setActive (): void {
-        if (this.getAttribute('selected') !== 'true') {
-            const textChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('text-channel') ?? []).filter(el => el instanceof TextChannelElement) as TextChannelElement[]
-            textChannels.forEach(el => { this === el ? el.setAttribute('selected', 'true') : el.removeAttribute('selected') })
+        window.localStorage.setItem('selected-text-channel', this.getAttribute('id') ?? '')
 
-            const messageList = document.querySelector('section.middle-section message-list')
-            if (messageList instanceof MessageListElement) {
-                messageList.loadContent(
-                    app.channels.get(this.id)?.messages ?? null
-                )
-            }
-        }
+        const textChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('text-channel') ?? []).filter(el => el instanceof TextChannelElement) as TextChannelElement[]
+        textChannels.forEach(el => { this === el ? el.setAttribute('selected', 'true') : el.removeAttribute('selected') })
+
+        const messageLists = Array.from(document.querySelectorAll('message-list[channel]') ?? []).filter(el => el instanceof MessageListElement) as MessageListElement[]
+        messageLists.forEach(el => { this.getAttribute('id') === el.getAttribute('channel') ? el.setAttribute('active', 'true') : el.removeAttribute('active') })
     }
 }
 

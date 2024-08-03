@@ -28,7 +28,8 @@ templateElement.innerHTML = /* HTML */`
             color: var(--white);
         }
         .member .avatar {
-            max-width: 32px;
+            width: 32px;
+            height: 32px;
             display: block;
             border-radius: 3px;
         }

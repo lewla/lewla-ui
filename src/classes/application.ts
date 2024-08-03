@@ -1,4 +1,4 @@
-import { ChannelListElement, MemberListElement, MessageListElement, TextChannelElement } from '../components/index.js'
+import { ChannelListElement, MemberListElement, MessageListElement } from '../components/index.js'
 import type { ServerMember } from '../objects/servermember.js'
 import type { Channel } from '../objects/channel.js'
 import { actions } from '../actions/incoming/index.js'
@@ -6,7 +6,6 @@ import { type BaseAction } from '../actions/base.js'
 import { PingAction } from '../actions/outgoing/ping.js'
 import { AuthAction } from '../actions/outgoing/auth.js'
 import { createDB } from '../db/index.js'
-import { MessageAction } from '../actions/outgoing/message.js'
 
 /**
  * The application class
@@ -18,6 +17,7 @@ export class Application {
     public actions: Map<string, typeof BaseAction>
     public serverName: string
     public rootElement: HTMLElement | null
+    public currentMember?: ServerMember
 
     constructor () {
         this.channels = new Map()
@@ -112,13 +112,13 @@ export class Application {
             </section>
             <section class="middle-section">
                 <div id="chat-input-container">
-                    <button class="no-bg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM12.75 8C12.75 7.58579 12.4142 7.25 12 7.25C11.5858 7.25 11.25 7.58579 11.25 8V11.25H8C7.58579 11.25 7.25 11.5858 7.25 12C7.25 12.4142 7.58579 12.75 8 12.75H11.25V16C11.25 16.4142 11.5858 16.75 12 16.75C12.4142 16.75 12.75 16.4142 12.75 16V12.75H16C16.4142 12.75 16.75 12.4142 16.75 12C16.75 11.5858 16.4142 11.25 16 11.25H12.75V8Z" fill="currentColor"></path></svg>
-                    </button>
-                    <div id="chat-input" role="textbox" aria-multiline="true" spellcheck="true" aria-invalid="false" autocorrect="off" data-can-focus="true" placeholder="Enter a message" contenteditable="true" zindex="-1"></div>
-                    <button class="no-bg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.78415 1.35644C6.28844 1.0927 4.86213 2.09142 4.5984 3.58713L2.16732 17.3744C1.90359 18.8701 2.9023 20.2965 4.39801 20.5602L16.2157 22.644C17.7114 22.9077 19.1377 21.909 19.4015 20.4133L21.8325 6.62597C22.0963 5.13026 21.0976 3.70395 19.6018 3.44022L7.78415 1.35644ZM9.05919 5.64323C8.65127 5.5713 8.26228 5.84368 8.19035 6.2516C8.11842 6.65952 8.3908 7.04851 8.79872 7.12044L16.6772 8.50963C17.0851 8.58155 17.4741 8.30918 17.546 7.90126C17.618 7.49334 17.3456 7.10434 16.9377 7.03242L9.05919 5.64323ZM7.49577 10.1911C7.5677 9.78313 7.95669 9.51076 8.36461 9.58268L16.2431 10.9719C16.651 11.0438 16.9234 11.4328 16.8514 11.8407C16.7795 12.2486 16.3905 12.521 15.9826 12.4491L8.10414 11.0599C7.69622 10.988 7.42384 10.599 7.49577 10.1911ZM7.67003 13.5212C7.26211 13.4492 6.87312 13.7216 6.80119 14.1295C6.72926 14.5374 7.00164 14.9264 7.40956 14.9984L12.3336 15.8666C12.7415 15.9385 13.1305 15.6662 13.2024 15.2582C13.2744 14.8503 13.002 14.4613 12.5941 14.3894L7.67003 13.5212Z" fill="currentColor"></path></svg>
-                    </button>
+                    <interface-button class='round bg-none color-lightgray p-0 bg-hov-evenlighterbg'>
+                        <svg slot='icon' xmlns="http://www.w3.org/2000/svg" width="22" height="22" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM12.75 8C12.75 7.58579 12.4142 7.25 12 7.25C11.5858 7.25 11.25 7.58579 11.25 8V11.25H8C7.58579 11.25 7.25 11.5858 7.25 12C7.25 12.4142 7.58579 12.75 8 12.75H11.25V16C11.25 16.4142 11.5858 16.75 12 16.75C12.4142 16.75 12.75 16.4142 12.75 16V12.75H16C16.4142 12.75 16.75 12.4142 16.75 12C16.75 11.5858 16.4142 11.25 16 11.25H12.75V8Z" fill="currentColor"></path></svg>
+                    </interface-button>
+                    <chat-input></chat-input>
+                    <interface-button class='round bg-none color-lightgray p-0 bg-hov-evenlighterbg'>
+                        <svg slot='icon' xmlns="http://www.w3.org/2000/svg" width="22" height="22" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.78415 1.35644C6.28844 1.0927 4.86213 2.09142 4.5984 3.58713L2.16732 17.3744C1.90359 18.8701 2.9023 20.2965 4.39801 20.5602L16.2157 22.644C17.7114 22.9077 19.1377 21.909 19.4015 20.4133L21.8325 6.62597C22.0963 5.13026 21.0976 3.70395 19.6018 3.44022L7.78415 1.35644ZM9.05919 5.64323C8.65127 5.5713 8.26228 5.84368 8.19035 6.2516C8.11842 6.65952 8.3908 7.04851 8.79872 7.12044L16.6772 8.50963C17.0851 8.58155 17.4741 8.30918 17.546 7.90126C17.618 7.49334 17.3456 7.10434 16.9377 7.03242L9.05919 5.64323ZM7.49577 10.1911C7.5677 9.78313 7.95669 9.51076 8.36461 9.58268L16.2431 10.9719C16.651 11.0438 16.9234 11.4328 16.8514 11.8407C16.7795 12.2486 16.3905 12.521 15.9826 12.4491L8.10414 11.0599C7.69622 10.988 7.42384 10.599 7.49577 10.1911ZM7.67003 13.5212C7.26211 13.4492 6.87312 13.7216 6.80119 14.1295C6.72926 14.5374 7.00164 14.9264 7.40956 14.9984L12.3336 15.8666C12.7415 15.9385 13.1305 15.6662 13.2024 15.2582C13.2744 14.8503 13.002 14.4613 12.5941 14.3894L7.67003 13.5212Z" fill="currentColor"></path></svg>
+                    </interface-button>
                 </div>
             </section>
             <section class="right-section">
@@ -131,55 +131,18 @@ export class Application {
 
         const channelList = new ChannelListElement()
         const memberList = new MemberListElement()
-        const messageList = new MessageListElement()
 
+        this.channels.forEach(channel => {
+            if (channel.type === 'text') {
+                const messageList = new MessageListElement()
+                messageList.setAttribute('channel', channel.id)
+                document.querySelector('section.messages')?.appendChild(messageList)
+            }
+        })
         channelList.loadContent(this.channels)
         memberList.loadContent(this.members)
 
         document.querySelector('section.channels')?.appendChild(channelList)
         document.querySelector('section.members')?.appendChild(memberList)
-        document.querySelector('section.messages')?.appendChild(messageList)
-
-        const firstChannel = channelList.shadowRoot?.querySelector('text-channel')
-        if (firstChannel instanceof TextChannelElement) {
-            firstChannel.setActive()
-        }
-
-        document.getElementById('chat-input')?.addEventListener('input', (event) => {
-            if (event.target instanceof HTMLElement) {
-                if (event.target.innerHTML === '<br>') event.target.innerHTML = ''
-            }
-        })
-
-        document.getElementById('chat-input')?.addEventListener('keydown', (event) => {
-            if (this.ws === undefined) {
-                return
-            }
-            if (event.target instanceof HTMLElement) {
-                if ((event.key === 'Enter' || event.key === 'NumpadEnter') && !event.shiftKey) {
-                    const channelId = document.querySelector('channel-list')?.shadowRoot?.querySelector('text-channel[selected="true"]')?.getAttribute('id')
-                    if (channelId == null) {
-                        return
-                    }
-
-                    const message = new MessageAction(
-                        this.ws,
-                        {
-                            data: {
-                                channel: channelId,
-                                type: 'text',
-                                body: {
-                                    text: event.target.innerHTML
-                                }
-                            }
-                        }
-                    )
-                    message.send()
-
-                    event.target.innerHTML = ''
-                    event.preventDefault()
-                }
-            }
-        })
     }
 }

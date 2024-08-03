@@ -1,4 +1,5 @@
 import type { ServerMemberElement } from '../components/servermember.js'
+import { storeData } from '../db/index.js'
 import type { ServerMember as ServerMemberInterface } from '../interfaces/servermember.js'
 
 export class ServerMember implements ServerMemberInterface {
@@ -30,5 +31,20 @@ export class ServerMember implements ServerMemberInterface {
 
     public set element (value: ServerMemberElement | undefined) {
         this._element = value
+    }
+
+    public store (): void {
+        storeData(
+            'member',
+            {
+                id: this.id,
+                type: this.type,
+                display_name: this.display_name,
+                avatar_url: this.avatar_url,
+                status: this.status,
+            }
+        ).catch((error) => {
+            console.log(error)
+        })
     }
 }

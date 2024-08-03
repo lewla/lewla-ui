@@ -1,11 +1,14 @@
-import type { Channel } from '../objects/channel.js'
-import type { ServerMember } from '../objects/servermember.js'
-
 export interface Message {
     id: string
-    member?: ServerMember
-    channel?: Channel
+    timestamp: string
+    member: string
+    channel: string
+    type: string
     body: {
-        text: string
+        text?: string
+        components?: Array<{
+            type: string
+            data: any
+        }>
     }
 }

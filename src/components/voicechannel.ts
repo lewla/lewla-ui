@@ -1,5 +1,5 @@
 import { BaseElement } from '../classes/baseelement.js'
-import type { Channel } from '../interfaces/channel.js'
+import type { Channel as ChannelInterface } from '../interfaces/channel.js'
 import { VoicePanelElement } from './voicepanel.js'
 
 const templateElement = document.createElement('template')
@@ -49,7 +49,7 @@ export class VoiceChannelElement extends BaseElement {
         'display-name'
     ]
 
-    constructor (channel?: Channel) {
+    constructor (channel?: ChannelInterface) {
         super(templateElement)
 
         if (channel !== undefined) {

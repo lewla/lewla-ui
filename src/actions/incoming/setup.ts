@@ -1,16 +1,17 @@
 import { BaseAction } from '../base.js'
 import { ServerMember } from '../../objects/servermember.js'
 import type { ServerMember as ServerMemberInterface } from '../../interfaces/servermember.js'
-import { Channel } from '../../objects/channel.js'
 import type { Channel as ChannelInterface } from '../../interfaces/channel.js'
+import type { Message as MessageInterface } from '../../interfaces/message.js'
+import { Channel } from '../../objects/channel.js'
 import { app } from '../../index.js'
-import { getAll, storeData } from '../../db/index.js'
-import type { MessageData } from './message.js'
-import { TextMessageElement } from '../../components/textmessage.js'
+import { getAll } from '../../db/index.js'
+import { Message } from '../../objects/message.js'
 
 interface SetupData {
     channels: ChannelInterface[]
     members: ServerMemberInterface[]
+    messages: MessageInterface[]
 }
 
 export class SetupAction extends BaseAction {
@@ -26,39 +27,16 @@ export class SetupAction extends BaseAction {
         this.body.data.channels.forEach((data) => {
             const channel = new Channel(data)
             app.channels.set(channel.id, channel)
-
-            storeData(
-                'channel',
-                {
-                    id: channel.id,
-                    name: channel.name,
-                    type: channel.type,
-                    order: channel.order
-                }
-            ).catch((error) => {
-                console.error(error)
-            })
+            channel.store()
         })
         this.body.data.members.forEach((data) => {
             const member = new ServerMember(data)
             app.members.set(member.id, member)
+            member.store()
         })
 
         caches.open('avatars').then((cache) => {
             app.members.forEach((member) => {
-                storeData(
-                    'member',
-                    {
-                        id: member.id,
-                        type: member.type,
-                        display_name: member.display_name,
-                        avatar_url: member.avatar_url,
-                        status: member.status
-                    }
-                ).catch((error) => {
-                    console.error(error)
-                })
-
                 const avatar = member.avatar_url
                 if (typeof avatar === 'string') {
                     const url = new URL(window.location.href + avatar)
@@ -73,7 +51,7 @@ export class SetupAction extends BaseAction {
         })
 
         getAll('message')
-            .then((messages: MessageData[]) => {
+            .then((messages: MessageInterface[]) => {
                 messages.sort((a, b) => {
                     const dateA = new Date(a.timestamp).getTime()
                     const dateB = new Date(b.timestamp).getTime()
@@ -91,10 +69,16 @@ export class SetupAction extends BaseAction {
                         return
                     }
 
-                    if (app.channels.get(message.channel)?.element?.getAttribute('selected') === 'true') {
-                        const el = new TextMessageElement({ id: message.id, member, body: { text: message.body.text ?? '' } })
-                        document.querySelector('message-list')?.shadowRoot?.appendChild(el)
-                    }
+                    const msg = new Message({
+                        id: message.id,
+                        member: member.id,
+                        channel: channel.id,
+                        timestamp: message.timestamp,
+                        type: message.type,
+                        body: message.body
+                    })
+                    channel.messages.set(msg.id, msg)
+                    msg.display()
                 })
             })
             .catch((error) => {
