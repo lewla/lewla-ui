@@ -11,67 +11,101 @@ import { createDB } from '../db/index.js'
  * The application class
  */
 export class Application {
-    public ws: WebSocket | undefined
+    public ws: WebSocket
     public channels: Map<string, Channel>
     public members: Map<string, ServerMember>
     public actions: Map<string, typeof BaseAction>
+    public requests: Map<string, BaseAction>
     public serverName: string
     public rootElement: HTMLElement | null
     public currentMember?: ServerMember
+    public websocketUrl: string
 
-    constructor () {
+    constructor (websocketUrl: string) {
+        this.websocketUrl = websocketUrl
         this.channels = new Map()
         this.members = new Map()
         /**
          * Map of actions that can be handled by the Client
          */
         this.actions = actions
+        this.requests = new Map()
         this.serverName = 'lew.la official'
         this.rootElement = document.getElementById('app')
+
+        createDB()
+        this.ws = this.connect()
     }
 
-    public init (websocketUrl: string): void {
-        this.ws = new WebSocket(websocketUrl)
-        createDB()
-        this.ws.addEventListener('message', (event) => {
-            if (this.ws === undefined) {
-                throw new Error('WebSocket not initialized')
-            }
-            if (typeof event.data !== 'string') {
-                throw new Error('Invalid payload')
-            }
-            const decoded = JSON.parse(event.data) ?? {}
-            const messageAction = decoded.action
-            const messageData = decoded.data ?? null
+    public connect (): WebSocket {
+        const ws = new WebSocket(this.websocketUrl)
+        ws.addEventListener('message', (event) => { this.handleMessage(event) })
+        ws.addEventListener('open', (event) => { this.handleOpen(event) })
+        ws.addEventListener('close', (event) => { this.handleClose(event) })
+        ws.addEventListener('error', (event) => { this.handleError(event) })
+        return ws
+    }
 
-            if (
-                typeof messageAction !== 'string' ||
-                messageData === null
-            ) {
-                throw new Error('No action provided')
-            }
+    protected handleOpen (event: Event): void {
+        setInterval(() => {
+            const timestamp = Date.now()
+            new PingAction(this.ws, { data: { timestamp } })
+                .sendAsync()
+                .then(
+                    (response) => {
+                        const rtt = Date.now() - response.timestamp
+                        console.log('Round-trip time:', rtt, 'ms')
+                    })
+                .catch(
+                    (error) => {
+                        console.error(error)
+                    })
+        }, 30000)
 
-            const Action = this.actions.get(messageAction.toLowerCase())
-            if (Action == null) {
-                throw new Error('Unsupported action: ' + messageAction)
-            }
+        new AuthAction(this.ws, { data: { token: window.localStorage.getItem('authtoken') ?? '' } }).send()
+    }
 
-            const action = new Action(this.ws, { data: messageData })
-            action.handle()
-        })
-        this.ws.addEventListener('open', (event) => {
-            setInterval(() => {
-                if (this.ws === undefined || this.ws?.readyState !== this.ws?.OPEN) {
-                    return
-                }
-                new PingAction(this.ws, { data: { timestamp: Date.now() } }).send()
-            }, 30000)
+    protected handleMessage (event: MessageEvent<any>): void {
+        if (typeof event.data !== 'string') {
+            throw new Error('Invalid payload')
+        }
+        const decoded = JSON.parse(event.data) ?? {}
+        const messageAction = decoded.action
+        const messageId = decoded.id ?? null
+        const messageData = decoded.data ?? null
 
-            if (this.ws === undefined || this.ws?.readyState !== this.ws?.OPEN) {
+        // Pass response to async actions
+        if (typeof messageId === 'string' && this.requests.has(messageId)) {
+            const asyncAction = this.requests.get(messageId)
+            if (typeof asyncAction?.resolver !== 'undefined') {
+                asyncAction.resolver(messageData)
+                this.requests.delete(messageId)
                 return
             }
-            new AuthAction(this.ws, { data: { token: window.localStorage.getItem('authtoken') ?? '' } }).send()
-        })
+        }
+
+        if (
+            typeof messageAction !== 'string' ||
+            messageData === null
+        ) {
+            throw new Error('No action provided')
+        }
+
+        const Action = this.actions.get(messageAction.toLowerCase())
+        if (Action == null) {
+            throw new Error('Unsupported action: ' + messageAction)
+        }
+
+        const action = new Action(this.ws, { data: messageData })
+        action.handle()
+    }
+
+    protected handleClose (event: CloseEvent): void {
+        console.warn(event)
+    }
+
+    protected handleError (event: Event): void {
+        console.error(event)
     }
 
     public loadUI (): void {
