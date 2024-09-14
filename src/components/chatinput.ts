@@ -29,8 +29,7 @@ templateElement.innerHTML = /* HTML */`
 `
 
 export class ChatInputElement extends BaseElement {
-    static observedAttributes = [
-    ]
+    static observedAttributes = []
 
     constructor () {
         super(templateElement)
@@ -42,9 +41,6 @@ export class ChatInputElement extends BaseElement {
         })
 
         this.shadowRoot?.getElementById('chat-input')?.addEventListener('keydown', (event) => {
-            if (app.ws === undefined) {
-                return
-            }
             if (event.target instanceof HTMLElement) {
                 if ((event.key === 'Enter' || event.key === 'NumpadEnter') && !event.shiftKey) {
                     const channelId = document.querySelector('channel-list')?.shadowRoot?.querySelector('text-channel[selected="true"]')?.getAttribute('id')
