@@ -1,6 +1,6 @@
-import type { ServerMemberElement } from '../components/servermember.js'
-import { storeData } from '../db/index.js'
-import type { ServerMember as ServerMemberInterface } from '../interfaces/servermember.js'
+import type { ServerMemberElement } from '../components/servermember'
+import { storeData } from '../db/index'
+import type { ServerMember as ServerMemberInterface } from '../interfaces/servermember'
 
 export class ServerMember implements ServerMemberInterface {
     public id: string
@@ -44,7 +44,7 @@ export class ServerMember implements ServerMemberInterface {
                 status: this.status,
             }
         ).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     }
 }

@@ -1,6 +1,6 @@
-import { Message } from '../../objects/message.js'
-import { app } from '../../index.js'
-import { BaseAction } from '../base.js'
+import { Message } from '../../objects/message'
+import { app } from '../../index'
+import { BaseAction } from './../base'
 
 export interface MessageData {
     id: string
@@ -21,7 +21,7 @@ export class MessageAction extends BaseAction {
     public static identifier = 'message'
     public body: { data: MessageData }
 
-    constructor (target: WebSocket, body: { data: MessageData }) {
+    constructor (target: WebSocket | undefined, body: { data: MessageData }) {
         super(target, body)
         this.body = body
 

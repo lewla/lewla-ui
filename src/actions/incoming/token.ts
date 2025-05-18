@@ -1,5 +1,5 @@
-import { AuthAction } from '../outgoing/auth.js'
-import { BaseAction } from '../base.js'
+import { AuthAction } from '../outgoing/auth'
+import { BaseAction } from './../base'
 
 interface TokenData {
     token: string
@@ -9,7 +9,7 @@ export class TokenAction extends BaseAction {
     public static identifier = 'token'
     public body: { data: TokenData }
 
-    constructor (target: WebSocket, body: { data: TokenData }) {
+    constructor (target: WebSocket | undefined, body: { data: TokenData }) {
         super(target, body)
         this.body = body
 

@@ -39,37 +39,19 @@ templateElement.innerHTML = /* HTML */`
             text-overflow: ellipsis;
             text-wrap: nowrap;
         }
-        .member .status-indicator {
-            width: 8px;
-            height: 8px;
-            position: absolute;
-            border-radius: 100%;
-            left: 32px;
-            bottom: 8px;
-        }
-        .status-indicator.online {
-            background: var(--good);
-        }
-        .status-indicator.offline {
-            background: #545458;
-        }
-        .status-indicator.busy {
-            background: var(--warn);
-        }
-        .status-indicator.away {
-            background: #dbab37;
+        .member .extra {
+            display: none;
         }
     </style>
     <div class='member'>
-        <span class='status-indicator'></span><img src class="avatar"><span class='display-name'><slot name="display-name">Unknown Member</slot></span>
+        <img src class="avatar"><span class='display-name'><slot name="display-name">Unknown Member</slot></span><div class="extra"></div>
     </div>
 `
 
-export class ServerMemberElement extends BaseElement {
+export class VoiceMemberElement extends BaseElement {
     static observedAttributes = [
         'display-name',
-        'avatar',
-        'status'
+        'avatar'
     ]
 
     attributeChangedCallback (name: string, oldValue: string | null, newValue: string | null): void {
@@ -81,13 +63,6 @@ export class ServerMemberElement extends BaseElement {
                     if (el instanceof HTMLImageElement) el.setAttribute('src', newValue)
                 })
                 break
-            case 'status':
-                if (newValue === null || !['online', 'offline', 'busy', 'away'].includes(newValue)) return
-                this.shadowRoot?.querySelectorAll('.status-indicator').forEach(el => {
-                    el.classList.remove('online', 'offline', 'busy', 'away')
-                    el.classList.add(newValue)
-                })
-                break
         }
     }
 
@@ -97,9 +72,9 @@ export class ServerMemberElement extends BaseElement {
         if (member !== undefined) {
             this.setAttribute('display-name', member.display_name)
             this.setAttribute('avatar', member.avatar_url)
-            this.setAttribute('status', member.status)
+            this.setAttribute('id', member.id)
         }
     }
 }
 
-window.customElements.define('server-member', ServerMemberElement)
+window.customElements.define('voice-member', VoiceMemberElement)

@@ -1,4 +1,4 @@
-import { BaseElement } from '../classes/baseelement.js'
+import { BaseElement } from '../classes/baseelement'
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
     <style>

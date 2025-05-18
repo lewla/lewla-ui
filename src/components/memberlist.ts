@@ -1,6 +1,6 @@
-import { BaseElement } from '../classes/baseelement.js'
-import { ServerMemberElement } from './servermember.js'
-import type { ServerMember } from '../objects/servermember.js'
+import { BaseElement } from '../classes/baseelement'
+import { ServerMemberElement } from './servermember'
+import type { ServerMember } from '../objects/servermember'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`

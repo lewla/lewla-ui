@@ -1,8 +1,8 @@
-import { MessageListElement } from '../components/messagelist.js'
-import { TextMessageElement } from '../components/textmessage.js'
-import { storeData } from '../db/index.js'
-import { app } from '../index.js'
-import type { Message as MessageInterface } from '../interfaces/message.js'
+import { MessageListElement } from '../components/messagelist'
+import { TextMessageElement } from '../components/textmessage'
+import { storeData } from '../db/index'
+import { app } from '../index'
+import type { Message as MessageInterface } from '../interfaces/message'
 
 export class Message implements MessageInterface {
     public id: string
@@ -49,7 +49,7 @@ export class Message implements MessageInterface {
                 type: this.type,
             }
         ).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     }
 

@@ -1,8 +1,8 @@
-import type { TextChannelElement } from '../components/textchannel.js'
-import type { VoiceChannelElement } from '../components/voicechannel.js'
-import { storeData } from '../db/index.js'
-import type { Channel as ChannelInterface } from '../interfaces/channel.js'
-import type { Message as MessageInterface } from '../interfaces/message.js'
+import type { TextChannelElement } from '../components/textchannel'
+import type { VoiceChannelElement } from '../components/voicechannel'
+import { storeData } from '../db/index'
+import type { Channel as ChannelInterface } from '../interfaces/channel'
+import type { Message as MessageInterface } from '../interfaces/message'
 
 export class Channel implements ChannelInterface {
     public id: string
@@ -41,7 +41,7 @@ export class Channel implements ChannelInterface {
                 order: this.order,
             }
         ).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     }
 }

@@ -1,4 +1,4 @@
-import { app } from '../index.js'
+import { app } from '../index'
 
 export class BaseAction {
     public static identifier: string
@@ -7,7 +7,10 @@ export class BaseAction {
     public id: string
     public resolver?: (value: unknown) => void
 
-    constructor (target: WebSocket, body: { data: any }) {
+    constructor (target: WebSocket | undefined, body: { data: any }) {
+        if (target === undefined) {
+            throw new Error('Invalid target')
+        }
         this.target = target
         this.body = body
         this.id = crypto.randomUUID()
