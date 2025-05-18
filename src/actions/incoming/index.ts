@@ -1,11 +1,17 @@
-import { type BaseAction } from '../base.js'
-import { TokenAction } from './token.js'
-import { ErrorAction } from './error.js'
-import { SuccessAction } from './success.js'
-import { AuthenticatedAction } from './authenticated.js'
-import { SetupAction } from './setup.js'
-import { PongAction } from './pong.js'
-import { MessageAction } from './message.js'
+import { type BaseAction } from './../base'
+import { TokenAction } from './token'
+import { ErrorAction } from './error'
+import { SuccessAction } from './success'
+import { AuthenticatedAction } from './authenticated'
+import { SetupAction } from './setup'
+import { PongAction } from './pong'
+import { MessageAction } from './message'
+import { VoiceConnectAction } from './voiceconnect'
+import { RTPCapabilitiesAction } from './rtpcapabilities'
+import { RTCCreateSendTransportAction } from './rtccreatesendtransport'
+import { RTCCreateReceiveTransportAction } from './rtccreatereceivetransport'
+import { RTCConsumeProducerAction } from './rtcconsumeproducer'
+import { RTCNewProducerAction } from './rtcnewproducer'
 
 export const actions = new Map<string, typeof BaseAction>([
     [TokenAction.identifier, TokenAction],
@@ -15,4 +21,10 @@ export const actions = new Map<string, typeof BaseAction>([
     [SetupAction.identifier, SetupAction],
     [PongAction.identifier, PongAction],
     [MessageAction.identifier, MessageAction],
+    [VoiceConnectAction.identifier, VoiceConnectAction],
+    [RTPCapabilitiesAction.identifier, RTPCapabilitiesAction],
+    [RTCCreateSendTransportAction.identifier, RTCCreateSendTransportAction],
+    [RTCCreateReceiveTransportAction.identifier, RTCCreateReceiveTransportAction],
+    [RTCConsumeProducerAction.identifier, RTCConsumeProducerAction],
+    [RTCNewProducerAction.identifier, RTCNewProducerAction],
 ])

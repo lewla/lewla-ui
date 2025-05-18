@@ -10,7 +10,7 @@ export const createDB = (): void => {
     })
 
     dbPromise.addEventListener('success', (event) => {
-        console.log(event)
+        console.info(event)
     })
 }
 

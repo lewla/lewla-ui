@@ -1,4 +1,4 @@
-import { BaseAction } from '../base.js'
+import { BaseAction } from '../base'
 
 interface AuthData {
     token: string
@@ -8,7 +8,7 @@ export class AuthAction extends BaseAction {
     public static identifier = 'auth'
     public body: { data: AuthData }
 
-    constructor (target: WebSocket, body: { data: AuthData }) {
+    constructor (target: WebSocket | undefined, body: { data: AuthData }) {
         super(target, body)
         this.body = body
 

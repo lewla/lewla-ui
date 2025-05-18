@@ -1,6 +1,6 @@
-import { BaseElement } from '../classes/baseelement.js'
-import { VoiceChannelElement, TextChannelElement } from '../components/index.js'
-import type { Channel } from '../objects/channel.js'
+import { BaseElement } from '../classes/baseelement'
+import { VoiceChannelElement, TextChannelElement } from '../components/index'
+import type { Channel } from '../objects/channel'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`

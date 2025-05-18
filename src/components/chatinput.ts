@@ -1,6 +1,6 @@
-import { MessageAction } from '../actions/outgoing/message.js'
-import { BaseElement } from '../classes/baseelement.js'
-import { app } from '../index.js'
+import { MessageAction } from '../actions/outgoing/message'
+import { BaseElement } from '../classes/baseelement'
+import { app } from '../index'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
@@ -79,7 +79,10 @@ export class ChatInputElement extends BaseElement {
 
         this.shadowRoot?.getElementById('chat-input')?.addEventListener('paste', (event) => {
             event.preventDefault()
-            document.execCommand('insertText', false, event.clipboardData?.getData('text/plain') ?? '')
+            const clipboard = event.clipboardData?.getData('text/plain')
+            if (typeof clipboard === 'string') {
+                document.execCommand('insertText', false, clipboard)
+            }
         })
     }
 }

@@ -1,12 +1,12 @@
-import { BaseAction } from '../base.js'
-import { ServerMember } from '../../objects/servermember.js'
-import type { ServerMember as ServerMemberInterface } from '../../interfaces/servermember.js'
-import type { Channel as ChannelInterface } from '../../interfaces/channel.js'
-import type { Message as MessageInterface } from '../../interfaces/message.js'
-import { Channel } from '../../objects/channel.js'
-import { app } from '../../index.js'
-import { getAll } from '../../db/index.js'
-import { Message } from '../../objects/message.js'
+import { BaseAction } from './../base'
+import { ServerMember } from '../../objects/servermember'
+import type { ServerMember as ServerMemberInterface } from '../../interfaces/servermember'
+import type { Channel as ChannelInterface } from '../../interfaces/channel'
+import type { Message as MessageInterface } from '../../interfaces/message'
+import { Channel } from '../../objects/channel'
+import { app } from '../../index'
+import { getAll } from '../../db/index'
+import { Message } from '../../objects/message'
 
 interface SetupData {
     channels: ChannelInterface[]
@@ -18,7 +18,7 @@ export class SetupAction extends BaseAction {
     public static identifier = 'setup'
     public body: { data: SetupData }
 
-    constructor (target: WebSocket, body: { data: SetupData }) {
+    constructor (target: WebSocket | undefined, body: { data: SetupData }) {
         super(target, body)
         this.body = body
     }

@@ -1,7 +1,7 @@
-import { BaseElement } from '../classes/baseelement.js'
-import { TextMessageElement } from './textmessage.js'
-import type { Message as MessageInterface } from '../interfaces/message.js'
-import { app } from '../index.js'
+import { BaseElement } from '../classes/baseelement'
+import { TextMessageElement } from './textmessage'
+import type { Message as MessageInterface } from '../interfaces/message'
+import { app } from '../index'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`

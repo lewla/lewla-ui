@@ -1,4 +1,4 @@
-import { BaseAction } from '../base.js'
+import { BaseAction } from './../base'
 
 interface SuccessData {
     message: string
@@ -8,7 +8,7 @@ export class SuccessAction extends BaseAction {
     public static identifier = 'success'
     public body: { data: SuccessData }
 
-    constructor (target: WebSocket, body: { data: SuccessData }) {
+    constructor (target: WebSocket | undefined, body: { data: SuccessData }) {
         super(target, body)
         this.body = body
 
@@ -20,6 +20,6 @@ export class SuccessAction extends BaseAction {
     }
 
     public handle (): void {
-        console.log(this.body.data.message)
+        console.info(this.body.data.message)
     }
 }

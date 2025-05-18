@@ -1,6 +1,8 @@
-import { BaseElement } from '../classes/baseelement.js'
-import type { Channel as ChannelInterface } from '../interfaces/channel.js'
-import { VoicePanelElement } from './voicepanel.js'
+import { VoiceConnectAction } from '../actions/outgoing/voiceconnect'
+import { BaseElement } from '../classes/baseelement'
+import { app } from '../index'
+import type { Channel as ChannelInterface } from '../interfaces/channel'
+import { VoicePanelElement } from './voicepanel'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
@@ -27,6 +29,10 @@ templateElement.innerHTML = /* HTML */`
             background: var(--lighterbg);
             color: var(--white);
         }
+        :host([selected="true"]) .channel {
+            background: var(--lighterbg);
+            color: var(--white);
+        }
         .channel .display-name {
             font-weight: 500;
             overflow: hidden;
@@ -37,10 +43,15 @@ templateElement.innerHTML = /* HTML */`
             min-width: 24px;
             display: block;
         }
+        .members {
+            padding: 0px 5px;
+        }
     </style>
     <div class='channel'>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 8a5 5 0 0 1 10 0v3a5 5 0 0 1-10 0V8Z"></path><path stroke-linecap="round" d="M13 8h4m-4 3h4m3-1v1a8 8 0 0 1-8 8m-8-9v1a8 8 0 0 0 8 8m0 0v3" opacity=".5"></path></g></svg>
         <span class='display-name'><slot name="display-name">Unknown Channel</slot></span>
+    </div>
+    <div class='members'>
     </div>
 `
 
@@ -49,15 +60,19 @@ export class VoiceChannelElement extends BaseElement {
         'display-name'
     ]
 
+    public connection?: RTCPeerConnection
+
     constructor (channel?: ChannelInterface) {
         super(templateElement)
 
         if (channel !== undefined) {
             this.setAttribute('display-name', channel.name)
             this.setAttribute('order', channel.order.toString())
+            this.setAttribute('id', channel.id)
         }
-        this.addEventListener('click', (ev) => {
-            this.displayVoicePanel()
+        this.shadowRoot?.querySelector('.channel')?.addEventListener('click', (ev) => {
+            this.setActive()
+            this.connect()
         })
     }
 
@@ -68,10 +83,33 @@ export class VoiceChannelElement extends BaseElement {
         const voicePanel = new VoicePanelElement()
         voicePanel.setAttribute('current-voice-channel', this.getAttribute('display-name') ?? 'Unknown channel')
         voicePanel.setAttribute('rtt', '90')
-        voicePanel.setAttribute('upload-per-second', Math.floor(Math.random() * 50).toString() + ' kb/s')
-        voicePanel.setAttribute('download-per-second', Math.floor(Math.random() * 500).toString() + ' kb/s')
 
         document.querySelector('section.channels')?.appendChild(voicePanel)
+    }
+
+    setActive (): void {
+        window.localStorage.setItem('selected-voice-channel', this.getAttribute('id') ?? '')
+
+        const voiceChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('voice-channel') ?? []).filter(el => el instanceof VoiceChannelElement)
+        voiceChannels.forEach(el => { this === el ? el.setAttribute('selected', 'true') : el.removeAttribute('selected') })
+
+        this.displayVoicePanel()
+    }
+
+    connect (): void {
+        if (app.ws === undefined) {
+            return
+        }
+
+        const connect = new VoiceConnectAction(
+            app.ws,
+            {
+                data: {
+                    channel: this.getAttribute('id') ?? ''
+                }
+            }
+        )
+        connect.send()
     }
 }
 

@@ -1,11 +1,12 @@
-import { ChannelListElement, MemberListElement, MessageListElement } from '../components/index.js'
-import type { ServerMember } from '../objects/servermember.js'
-import type { Channel } from '../objects/channel.js'
-import { actions } from '../actions/incoming/index.js'
-import { type BaseAction } from '../actions/base.js'
-import { PingAction } from '../actions/outgoing/ping.js'
-import { AuthAction } from '../actions/outgoing/auth.js'
-import { createDB } from '../db/index.js'
+import { ChannelListElement, MemberListElement, MessageListElement } from '../components/index'
+import type { ServerMember } from '../objects/servermember'
+import type { Channel } from '../objects/channel'
+import { actions } from '../actions/incoming/index'
+import { type BaseAction } from '../actions/base'
+import { PingAction } from '../actions/outgoing/ping'
+import { AuthAction } from '../actions/outgoing/auth'
+import { createDB } from '../db/index'
+import type { Device, types } from 'mediasoup-client'
 
 /**
  * The application class
@@ -20,6 +21,10 @@ export class Application {
     public rootElement: HTMLElement | null
     public currentMember?: ServerMember
     public websocketUrl: string
+    public iceServers: RTCIceServer[]
+    public device?: Device
+    public sendTransport?: types.Transport
+    public recvTransport?: types.Transport
 
     constructor (websocketUrl: string) {
         this.websocketUrl = websocketUrl
@@ -32,6 +37,17 @@ export class Application {
         this.requests = new Map()
         this.serverName = 'lew.la official'
         this.rootElement = document.getElementById('app')
+        this.iceServers = [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun.l.google.com:5349' },
+            { urls: 'stun:stun1.l.google.com:3478' },
+            { urls: 'stun:stun1.l.google.com:5349' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:5349' },
+            { urls: 'stun:stun3.l.google.com:3478' },
+            { urls: 'stun:stun3.l.google.com:5349' },
+            { urls: 'stun:stun4.l.google.com:19302' },
+        ]
 
         createDB()
         this.ws = this.connect()
@@ -54,7 +70,7 @@ export class Application {
                 .then(
                     (response) => {
                         const rtt = Date.now() - response.timestamp
-                        console.log('Round-trip time:', rtt, 'ms')
+                        console.info('Round-trip time:', rtt, 'ms')
                     })
                 .catch(
                     (error) => {

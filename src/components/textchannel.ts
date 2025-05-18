@@ -1,6 +1,6 @@
-import { BaseElement } from '../classes/baseelement.js'
-import { MessageListElement } from './messagelist.js'
-import type { Channel as ChannelInterface } from '../interfaces/channel.js'
+import { BaseElement } from '../classes/baseelement'
+import { MessageListElement } from './messagelist'
+import type { Channel as ChannelInterface } from '../interfaces/channel'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
@@ -91,10 +91,10 @@ export class TextChannelElement extends BaseElement {
     setActive (): void {
         window.localStorage.setItem('selected-text-channel', this.getAttribute('id') ?? '')
 
-        const textChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('text-channel') ?? []).filter(el => el instanceof TextChannelElement) as TextChannelElement[]
+        const textChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('text-channel') ?? []).filter(el => el instanceof TextChannelElement)
         textChannels.forEach(el => { this === el ? el.setAttribute('selected', 'true') : el.removeAttribute('selected') })
 
-        const messageLists = Array.from(document.querySelectorAll('message-list[channel]') ?? []).filter(el => el instanceof MessageListElement) as MessageListElement[]
+        const messageLists = Array.from(document.querySelectorAll('message-list[channel]') ?? []).filter(el => el instanceof MessageListElement)
         messageLists.forEach(el => { this.getAttribute('id') === el.getAttribute('channel') ? el.setAttribute('active', 'true') : el.removeAttribute('active') })
     }
 }

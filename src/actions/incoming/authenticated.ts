@@ -1,5 +1,5 @@
-import { app } from '../../index.js'
-import { BaseAction } from '../base.js'
+import { app } from './../../index'
+import { BaseAction } from '../base'
 
 interface AuthenticatedData {
     member: {
@@ -15,7 +15,7 @@ export class AuthenticatedAction extends BaseAction {
     public static identifier = 'authenticated'
     public body: { data: AuthenticatedData }
 
-    constructor (target: WebSocket, body: { data: AuthenticatedData }) {
+    constructor (target: WebSocket | undefined, body: { data: AuthenticatedData }) {
         super(target, body)
         this.body = body
 
