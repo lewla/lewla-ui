@@ -39,7 +39,7 @@ export class RTCCreateSendTransportAction extends BaseAction {
             iceCandidates: this.body.data.iceCandidates,
             dtlsParameters: this.body.data.dtlsParameters,
             sctpParameters: this.body.data.sctpParameters,
-            iceServers: []
+            iceServers: app.iceServers
         })
 
         if (sendTransport === undefined || app.device === undefined) {
