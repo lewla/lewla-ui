@@ -25,6 +25,7 @@ templateElement.innerHTML = /* HTML */`
         /* Padding */
         :host(.p-0) .button { padding: 0px }
         :host(.p-6) .button { padding: 6px }
+        :host(.p-12) .button { padding: 12px }
         /* Border Radius */
         :host(.round)  .button { border-radius: 5px }
         :host(.circle) .button { border-radius: 20px }
