@@ -12,7 +12,7 @@ import type { Device, types } from 'mediasoup-client'
  * The application class
  */
 export class Application {
-    public ws: WebSocket
+    public ws?: WebSocket
     public channels: Map<string, Channel>
     public members: Map<string, ServerMember>
     public actions: Map<string, typeof BaseAction>
@@ -20,14 +20,13 @@ export class Application {
     public serverName: string
     public rootElement: HTMLElement | null
     public currentMember?: ServerMember
-    public websocketUrl: string
+    public websocketUrl?: string
     public iceServers: RTCIceServer[]
     public device?: Device
     public sendTransport?: types.Transport
     public recvTransport?: types.Transport
 
-    constructor (websocketUrl: string) {
-        this.websocketUrl = websocketUrl
+    constructor () {
         this.channels = new Map()
         this.members = new Map()
         /**
@@ -50,15 +49,18 @@ export class Application {
         ]
 
         createDB()
-        this.ws = this.connect()
     }
 
-    public connect (): WebSocket {
-        const ws = new WebSocket(this.websocketUrl)
+    public connect (wsUrl: string): WebSocket {
+        const ws = new WebSocket(wsUrl)
+        this.websocketUrl = wsUrl
+
         ws.addEventListener('message', (event) => { this.handleMessage(event) })
         ws.addEventListener('open', (event) => { this.handleOpen(event) })
         ws.addEventListener('close', (event) => { this.handleClose(event) })
         ws.addEventListener('error', (event) => { this.handleError(event) })
+
+        this.ws = ws
         return ws
     }
 

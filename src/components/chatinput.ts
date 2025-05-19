@@ -57,6 +57,11 @@ export class ChatInputElement extends BaseElement {
                         return
                     }
 
+                    if (app.ws === undefined) {
+                        event.preventDefault()
+                        return
+                    }
+
                     const message = new MessageAction(
                         app.ws,
                         {
