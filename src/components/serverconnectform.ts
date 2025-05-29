@@ -16,36 +16,42 @@ templateElement.innerHTML = /* HTML */`
             padding: 20px;
             border-radius: 10px;
         }
-        #server-url-input {
+        input {
             outline: none;
-            padding: 9px;
+            padding: 9px 12px;
             max-width: 400px;
-            margin: 10px 0px;
+            margin: 5px 0px;
             width: 100%;
             box-sizing: border-box;
             border-radius: 3px;
             border: none;
+            background: var(--lightbg);
+            color: var(--white);
         }
-        #join-official-server-button {
-            margin: 10px 0 0 0;
+        .form-button {
+            margin: 6px 0 0 0;
+            border-radius: 5px;
+            background: var(--accent);
+            color: var(--white);
+            cursor: pointer;
+            outline: none;
+            box-shadow: none;
+            max-width: 150px;
+            width: 100%;
+            font-weight: 600;
         }
-    </style>
-    
-        <div class="form-section official-server">
-                <h2>Join official server</h2>
-            <interface-button class='round bg-accent color-offwhite p-12' id='join-official-server-button'>
-                <span slot="label">Connect to Official Server</span>
-            </interface-button>
-        </div>
-        <div class="form-section custom-server">
-            <h2>Join custom server</h2>
-            <form id="server-connect-form">
-                <input type="text" placeholder="ws://127.0.0.1:8280" id='server-url-input'>
-                <interface-button class='round bg-accent color-offwhite p-12' id='server-url-submit'>
-                    <span slot="label">Connect</span>
-                </interface-button>
-            </form>
-        </div>
+    </style>    
+    <div class="form-section official-server">
+        <h2>Join official server</h2>
+        <input type="submit" class="form-button" id="join-official-server-button" value="Connect">
+    </div>
+    <div class="form-section custom-server">
+        <h2>Join custom server</h2>
+        <form id="server-connect-form">
+            <input type="text" placeholder="ws://127.0.0.1:8280" id='server-url-input'>
+            <input type="submit" class="form-button" id="server-url-submit" value="Connect">
+        </form>
+    </div>
 `
 
 export class ServerConnectFormElement extends BaseElement {
@@ -63,17 +69,14 @@ export class ServerConnectFormElement extends BaseElement {
             event.preventDefault()
             const input = this.shadowRoot?.getElementById('server-url-input')
             if (input instanceof HTMLInputElement) {
-                console.log(input.value)
                 app.connect(input.value)
-            } else {
-                console.log(input)
             }
         })
 
         this.shadowRoot?.getElementById('server-url-submit')?.addEventListener('click', (event) => {
-            const form = this.shadowRoot?.getElementById('server-connect-form')
-            if (form instanceof HTMLFormElement) {
-                form.submit()
+            const input = this.shadowRoot?.getElementById('server-url-input')
+            if (input instanceof HTMLInputElement) {
+                app.connect(input.value)
             }
         })
 
