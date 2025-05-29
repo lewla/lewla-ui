@@ -83,7 +83,7 @@ export class Application {
         }, 30000)
 
         if (window.localStorage.getItem('authtoken') !== null) {
-        new AuthAction(this.ws, { data: { token: window.localStorage.getItem('authtoken') ?? '' } }).send()
+            new AuthAction(this.ws, { data: { token: window.localStorage.getItem('authtoken') ?? '' } }).send()
         } else {
             this.showLoginUI()
         }
