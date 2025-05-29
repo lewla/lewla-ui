@@ -7,11 +7,14 @@ import { SetupAction } from './setup'
 import { PongAction } from './pong'
 import { MessageAction } from './message'
 import { VoiceConnectAction } from './voiceconnect'
+import { VoiceDisconnectAction } from './voicedisconnect'
 import { RTPCapabilitiesAction } from './rtpcapabilities'
 import { RTCCreateSendTransportAction } from './rtccreatesendtransport'
 import { RTCCreateReceiveTransportAction } from './rtccreatereceivetransport'
 import { RTCConsumeProducerAction } from './rtcconsumeproducer'
 import { RTCNewProducerAction } from './rtcnewproducer'
+import { UnauthAction } from './unauth'
+import { RTCProducerClosedAction } from './rtcproducerclosed'
 
 export const actions = new Map<string, typeof BaseAction>([
     [TokenAction.identifier, TokenAction],
@@ -22,9 +25,12 @@ export const actions = new Map<string, typeof BaseAction>([
     [PongAction.identifier, PongAction],
     [MessageAction.identifier, MessageAction],
     [VoiceConnectAction.identifier, VoiceConnectAction],
+    [VoiceDisconnectAction.identifier, VoiceDisconnectAction],
     [RTPCapabilitiesAction.identifier, RTPCapabilitiesAction],
     [RTCCreateSendTransportAction.identifier, RTCCreateSendTransportAction],
     [RTCCreateReceiveTransportAction.identifier, RTCCreateReceiveTransportAction],
     [RTCConsumeProducerAction.identifier, RTCConsumeProducerAction],
     [RTCNewProducerAction.identifier, RTCNewProducerAction],
+    [UnauthAction.identifier, UnauthAction],
+    [RTCProducerClosedAction.identifier, RTCProducerClosedAction],
 ])

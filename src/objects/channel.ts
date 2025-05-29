@@ -10,15 +10,17 @@ export class Channel implements ChannelInterface {
     public type: 'text' | 'voice'
     public order: number
     public messages: Map<string, MessageInterface>
+    public members: string[]
 
     private _element?: TextChannelElement | VoiceChannelElement
 
-    constructor (channel: ChannelInterface, messages?: Map<string, MessageInterface>, element?: TextChannelElement | VoiceChannelElement) {
+    constructor (channel: ChannelInterface, messages?: Map<string, MessageInterface>, members?: string[], element?: TextChannelElement | VoiceChannelElement) {
         this.id = channel.id
         this.name = channel.name
         this.type = channel.type
         this.order = channel.order
         this.messages = messages ?? new Map()
+        this.members = members ?? []
 
         if (element !== undefined) this._element = element
     }

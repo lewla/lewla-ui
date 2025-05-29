@@ -2,6 +2,7 @@ import { VoiceConnectAction } from '../actions/outgoing/voiceconnect'
 import { BaseElement } from '../classes/baseelement'
 import { app } from '../index'
 import type { Channel as ChannelInterface } from '../interfaces/channel'
+import { VoiceMemberElement } from './voicemember'
 import { VoicePanelElement } from './voicepanel'
 
 const templateElement = document.createElement('template')
@@ -69,11 +70,25 @@ export class VoiceChannelElement extends BaseElement {
             this.setAttribute('display-name', channel.name)
             this.setAttribute('order', channel.order.toString())
             this.setAttribute('id', channel.id)
+            channel.members.forEach(memberId => { this.addVoiceMember(memberId) })
         }
         this.shadowRoot?.querySelector('.channel')?.addEventListener('click', (ev) => {
             this.setActive()
             this.connect()
         })
+    }
+
+    addVoiceMember (memberId: string): void {
+        const member = app.members.get(memberId)
+
+        if (member === undefined) {
+            return
+        }
+
+        this.shadowRoot?.querySelectorAll('.members voice-member[id="' + member.id + '"]').forEach(voiceMember => { voiceMember.remove() })
+
+        const el = new VoiceMemberElement(member)
+        this.shadowRoot?.querySelector('.members')?.appendChild(el)
     }
 
     // TODO: Move this method when event system is added (show when connect to voice event is fired)
@@ -100,6 +115,9 @@ export class VoiceChannelElement extends BaseElement {
         if (app.ws === undefined) {
             return
         }
+
+        app.sendTransport?.close()
+        app.recvTransport?.close()
 
         const connect = new VoiceConnectAction(
             app.ws,

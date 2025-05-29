@@ -1,4 +1,5 @@
 import { app } from '../..'
+import { RTCGetProducersAction } from '../outgoing/rtcgetproducers'
 import { RTCTransportConnectAction } from '../outgoing/rtctransportconnect'
 import { BaseAction } from './../base'
 import type { types } from 'mediasoup-client'
@@ -48,6 +49,9 @@ export class RTCCreateReceiveTransportAction extends BaseAction {
         recvTransport.on('connectionstatechange', (state) => { console.info('recvTransport', state) })
 
         app.recvTransport = recvTransport
+
+        const getProducers = new RTCGetProducersAction(app.ws, { data: { channelId: this.body.data.channelId } })
+        getProducers.send()
 
         recvTransport.on(
             'connect',

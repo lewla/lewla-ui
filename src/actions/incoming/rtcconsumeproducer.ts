@@ -45,6 +45,8 @@ export class RTCConsumeProducerAction extends BaseAction {
         }).then((consumer) => {
             consumer.resume()
 
+            app.consumers.set(consumer.id, consumer)
+
             const channelId = consumer.appData?.channelId
             const memberId = consumer.appData?.memberId
 
@@ -73,6 +75,10 @@ export class RTCConsumeProducerAction extends BaseAction {
                 el.srcObject = new MediaStream([consumer.track])
                 channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.shadowRoot?.querySelector('.extra')?.appendChild(el)
             }
+
+            consumer.observer.on('close', () => {
+                app.consumers.delete(consumer.id)
+            })
         }).catch((reason: string) => {
             console.error(reason)
         })

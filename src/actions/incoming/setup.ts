@@ -12,6 +12,11 @@ interface SetupData {
     channels: ChannelInterface[]
     members: ServerMemberInterface[]
     messages: MessageInterface[]
+    voiceUsers: Array<{
+        member: string
+        channel: string
+        type: string
+    }>
 }
 
 export class SetupAction extends BaseAction {
@@ -33,6 +38,21 @@ export class SetupAction extends BaseAction {
             const member = new ServerMember(data)
             app.members.set(member.id, member)
             member.store()
+        })
+        this.body.data.voiceUsers.forEach((data) => {
+            const member = app.members.get(data.member)
+            const channel = app.channels.get(data.channel)
+
+            if (member === undefined) {
+                return
+            }
+            if (channel === undefined) {
+                return
+            }
+
+            if (!channel.members.includes(member.id)) {
+                channel.members.push(member.id)
+            }
         })
 
         caches.open('avatars').then((cache) => {

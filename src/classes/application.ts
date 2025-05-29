@@ -1,4 +1,4 @@
-import { ChannelListElement, MemberListElement, MessageListElement } from '../components/index'
+import { ChannelListElement, MemberListElement, MessageListElement, AuthenticateFormElement } from '../components/index'
 import type { ServerMember } from '../objects/servermember'
 import type { Channel } from '../objects/channel'
 import { actions } from '../actions/incoming/index'
@@ -25,10 +25,12 @@ export class Application {
     public device?: Device
     public sendTransport?: types.Transport
     public recvTransport?: types.Transport
+    public consumers: Map<string, types.Consumer>
 
     constructor () {
         this.channels = new Map()
         this.members = new Map()
+        this.consumers = new Map()
         /**
          * Map of actions that can be handled by the Client
          */
@@ -80,7 +82,11 @@ export class Application {
                     })
         }, 30000)
 
-        new AuthAction(this.ws, { data: { token: window.localStorage.getItem('authtoken') ?? '' } }).send()
+        if (window.localStorage.getItem('authtoken') !== null) {
+            new AuthAction(this.ws, { data: { token: window.localStorage.getItem('authtoken') ?? '' } }).send()
+        } else {
+            this.showLoginUI()
+        }
     }
 
     protected handleMessage (event: MessageEvent<any>): void {
@@ -124,6 +130,12 @@ export class Application {
 
     protected handleError (event: Event): void {
         console.error(event)
+    }
+
+    public showLoginUI (): void {
+        if (this.rootElement != null) this.rootElement.innerText = ''
+        const form = new AuthenticateFormElement()
+        this.rootElement?.appendChild(form)
     }
 
     public loadUI (): void {
