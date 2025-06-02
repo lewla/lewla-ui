@@ -39,6 +39,11 @@ export class SetupAction extends BaseAction {
             app.members.set(member.id, member)
             member.store()
         })
+        this.body.data.messages.forEach((data) => {
+            const message = new Message(data)
+            app.channels.get(message.channel)?.messages.set(message.id, message)
+            message.store()
+        })
         this.body.data.voiceUsers.forEach((data) => {
             const member = app.members.get(data.member)
             const channel = app.channels.get(data.channel)
