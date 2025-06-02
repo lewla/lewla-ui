@@ -1,3 +1,4 @@
+import { app } from '../index'
 import { BaseElement } from '../classes/baseelement'
 
 const templateElement = document.createElement('template')
@@ -78,6 +79,69 @@ export class VoicePanelElement extends BaseElement {
 
     constructor () {
         super(templateElement)
+
+        this.showRecvStats()
+        this.showSendStats()
+    }
+
+    showRecvStats (): void {
+        let prevBytes: number
+        let prevTimestamp: number
+
+        setInterval(() => {
+            if (app.recvTransport?.connectionState === 'connected') {
+                app.recvTransport?.getStats().then((report) => {
+                    report.forEach((value, key) => {
+                        if (value.type === 'transport') {
+                            if (prevBytes !== undefined && prevTimestamp !== undefined) {
+                                const bytesDiff = value.bytesReceived - prevBytes
+                                const timeDiff = value.timestamp - prevTimestamp
+
+                                const bytesPerSecond = (bytesDiff * 8) / (timeDiff / 1000)
+                                this.setAttribute('download-per-second', `${(bytesPerSecond / 1000).toFixed(1)} kb/s`)
+                            }
+
+                            prevBytes = value.bytesReceived
+                            prevTimestamp = value.timestamp
+                        }
+                    })
+                }).catch((reason) => {
+                    console.log(reason)
+                })
+            } else {
+                this.setAttribute('download-per-second', `${(0).toFixed(1)} kb/s`)
+            }
+        }, 1000)
+    }
+
+    showSendStats (): void {
+        let prevBytes: number
+        let prevTimestamp: number
+
+        setInterval(() => {
+            if (app.sendTransport?.connectionState === 'connected') {
+                app.sendTransport?.getStats().then((report) => {
+                    report.forEach((value, key) => {
+                        if (value.type === 'transport') {
+                            if (prevBytes !== undefined && prevTimestamp !== undefined) {
+                                const bytesDiff = value.bytesSent - prevBytes
+                                const timeDiff = value.timestamp - prevTimestamp
+
+                                const bytesPerSecond = (bytesDiff * 8) / (timeDiff / 1000)
+                                this.setAttribute('upload-per-second', `${(bytesPerSecond / 1000).toFixed(1)} kb/s`)
+                            }
+
+                            prevBytes = value.bytesSent
+                            prevTimestamp = value.timestamp
+                        }
+                    })
+                }).catch((reason) => {
+                    console.log(reason)
+                })
+            } else {
+                this.setAttribute('upload-per-second', `${(0).toFixed(1)} kb/s`)
+            }
+        }, 1000)
     }
 }
 

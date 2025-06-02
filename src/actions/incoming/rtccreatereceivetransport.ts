@@ -59,30 +59,6 @@ export class RTCCreateReceiveTransportAction extends BaseAction {
             'connect',
             (data, callback, errback) => {
                 try {
-                    let prevBytes: number
-                    let prevTimestamp: number
-
-                    setInterval(() => {
-                        recvTransport.getStats().then((report) => {
-                            report.forEach((value, key) => {
-                                if (value.type === 'transport') {
-                                    if (prevBytes !== undefined && prevTimestamp !== undefined) {
-                                        const bytesDiff = value.bytesReceived - prevBytes
-                                        const timeDiff = value.timestamp - prevTimestamp
-
-                                        const bytesPerSecond = (bytesDiff * 8) / (timeDiff / 1000)
-                                        document.querySelector('voice-panel')?.setAttribute('download-per-second', `${(bytesPerSecond / 1000).toFixed(1)} kb/s`)
-                                    }
-
-                                    prevBytes = value.bytesReceived
-                                    prevTimestamp = value.timestamp
-                                }
-                            })
-                        }).catch((reason) => {
-                            console.log(reason)
-                        })
-                    }, 1000)
-
                     const connectAction = new RTCTransportConnectAction(app.ws, { data: { transportId: recvTransport.id, dtlsParameters: data.dtlsParameters, channelId: this.body.data.channelId } })
 
                     connectAction.sendAsync()

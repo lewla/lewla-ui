@@ -1,4 +1,4 @@
-import { app } from '..'
+import { app } from '../index'
 import { LoginAction } from '../actions/outgoing/login'
 import { RegisterAction } from '../actions/outgoing/register'
 import { BaseElement } from '../classes/baseelement'

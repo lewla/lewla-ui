@@ -1,4 +1,4 @@
-import { app } from '..'
+import { app } from '../index'
 import { BaseElement } from '../classes/baseelement'
 
 const templateElement = document.createElement('template')
