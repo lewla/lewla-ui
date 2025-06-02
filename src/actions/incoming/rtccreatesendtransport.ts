@@ -55,30 +55,6 @@ export class RTCCreateSendTransportAction extends BaseAction {
             'connect',
             (data, callback, errback) => {
                 try {
-                    let prevBytes: number
-                    let prevTimestamp: number
-
-                    setInterval(() => {
-                        sendTransport.getStats().then((report) => {
-                            report.forEach((value, key) => {
-                                if (value.type === 'transport') {
-                                    if (prevBytes !== undefined && prevTimestamp !== undefined) {
-                                        const bytesDiff = value.bytesSent - prevBytes
-                                        const timeDiff = value.timestamp - prevTimestamp
-
-                                        const bytesPerSecond = (bytesDiff * 8) / (timeDiff / 1000)
-                                        document.querySelector('voice-panel')?.setAttribute('upload-per-second', `${(bytesPerSecond / 1000).toFixed(1)} kb/s`)
-                                    }
-
-                                    prevBytes = value.bytesSent
-                                    prevTimestamp = value.timestamp
-                                }
-                            })
-                        }).catch((reason) => {
-                            console.log(reason)
-                        })
-                    }, 1000)
-
                     const connectAction = new RTCTransportConnectAction(app.ws, { data: { transportId: sendTransport.id, dtlsParameters: data.dtlsParameters, channelId: this.body.data.channelId } })
 
                     connectAction.sendAsync()
@@ -113,7 +89,7 @@ export class RTCCreateSendTransportAction extends BaseAction {
             }
         )
 
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } })
         const audioTrack = stream.getAudioTracks()[0]
         sendTransport.produce({ track: audioTrack }).catch((reason) => { console.error(reason) })
     }
