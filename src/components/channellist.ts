@@ -29,6 +29,12 @@ export class ChannelListElement extends BaseElement {
                 if (channel.type === 'text') {
                     const el = new TextChannelElement(channel)
                     channel.element = el
+
+                    const selectedChannelId = window.localStorage.getItem('selected-text-channel')
+                    if (selectedChannelId === null || !channels.has(selectedChannelId)) {
+                        window.localStorage.setItem('selected-text-channel', el.id)
+                    }
+
                     if (el.id === window.localStorage.getItem('selected-text-channel')) {
                         el.setAttribute('selected', 'true')
                         document.querySelector('message-list[channel="' + el.getAttribute('id') + '"]')?.setAttribute('active', 'true')
