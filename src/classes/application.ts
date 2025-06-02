@@ -21,7 +21,6 @@ export class Application {
     public rootElement: HTMLElement | null
     public currentMember?: ServerMember
     public websocketUrl?: string
-    public iceServers: RTCIceServer[]
     public device?: Device
     public sendTransport?: types.Transport
     public recvTransport?: types.Transport
@@ -38,17 +37,6 @@ export class Application {
         this.requests = new Map()
         this.serverName = 'lew.la official'
         this.rootElement = document.getElementById('app')
-        this.iceServers = [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun.l.google.com:5349' },
-            { urls: 'stun:stun1.l.google.com:3478' },
-            { urls: 'stun:stun1.l.google.com:5349' },
-            { urls: 'stun:stun2.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:5349' },
-            { urls: 'stun:stun3.l.google.com:3478' },
-            { urls: 'stun:stun3.l.google.com:5349' },
-            { urls: 'stun:stun4.l.google.com:19302' },
-        ]
 
         createDB()
     }

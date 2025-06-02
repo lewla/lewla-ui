@@ -11,6 +11,7 @@ interface RTCCreateReceiveTransportData {
     dtlsParameters: types.DtlsParameters
     sctpParameters: types.SctpParameters | undefined
     channelId: string
+    iceServers: RTCIceServer[]
 }
 
 export class RTCCreateReceiveTransportAction extends BaseAction {
@@ -26,6 +27,7 @@ export class RTCCreateReceiveTransportAction extends BaseAction {
             typeof this.body.data.channelId !== 'string' ||
             this.body.data.iceParameters === undefined ||
             this.body.data.iceCandidates === undefined ||
+            this.body.data.iceServers === undefined ||
             this.body.data.dtlsParameters === undefined
         ) {
             throw new Error('Invalid payload')
@@ -39,7 +41,7 @@ export class RTCCreateReceiveTransportAction extends BaseAction {
             iceCandidates: this.body.data.iceCandidates,
             dtlsParameters: this.body.data.dtlsParameters,
             sctpParameters: this.body.data.sctpParameters,
-            iceServers: app.iceServers
+            iceServers: this.body.data.iceServers
         })
 
         if (recvTransport === undefined) {
