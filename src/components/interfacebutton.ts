@@ -22,6 +22,20 @@ templateElement.innerHTML = /* HTML */`
             font-weight: 500;
             user-select: none;
         }
+
+        ::slotted([slot="icon-active"]) {
+            display: none;
+        }
+        :host([active-icon="true"]) ::slotted([slot="icon-active"]) {
+            display: inline;
+        }
+        :host([active-icon="true"]) ::slotted([slot="icon"]) {
+            display: none;
+        }
+        :host(:not([active-icon="true"])) ::slotted([slot="icon"]) {
+            display: inline;
+        }
+
         /* Padding */
         :host(.p-0) .button { padding: 0px }
         :host(.p-6) .button { padding: 6px }
@@ -39,9 +53,12 @@ templateElement.innerHTML = /* HTML */`
         :host(.color-white)     .button { color: var(--white) }
         :host(.color-offwhite)  .button { color: var(--offwhite) }
         :host(.color-lightgray) .button { color: var(--lightgray) }
+        :host(.color-accent) .button { color: var(--accent) }
+        :host(.color-warn) .button { color: var(--warn) }
     </style>
     <div class='button'>
         <slot name="icon"></slot>
+        <slot name="icon-active"></slot>
         <slot name="label"></slot>
     </div>
 `

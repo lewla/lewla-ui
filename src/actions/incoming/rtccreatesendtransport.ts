@@ -1,4 +1,5 @@
 import { app } from '../..'
+import { VoiceControlsElement } from '../../components/voicecontrols'
 import { RTCTransportConnectAction } from '../outgoing/rtctransportconnect'
 import { RTCTransportProduceAction } from '../outgoing/rtctransportproduce'
 import { BaseAction } from './../base'
@@ -91,6 +92,28 @@ export class RTCCreateSendTransportAction extends BaseAction {
 
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } })
         const audioTrack = stream.getAudioTracks()[0]
-        sendTransport.produce({ track: audioTrack }).catch((reason) => { console.error(reason) })
+        sendTransport.produce({ track: audioTrack })
+            .then((producer) => {
+                app.producers.set(producer.id, producer)
+
+                const controls = new VoiceControlsElement()
+                controls.setAttribute('id', producer.id)
+                controls.setAttribute('muted', 'false')
+                controls.setAttribute('deafened', 'false')
+                controls.setAttribute('stats-visible', 'true')
+
+                app.rootElement?.querySelector('#footer-left-section')?.appendChild(controls)
+
+                producer.observer.on('close', () => {
+                    app.producers.delete(producer.id)
+                })
+
+                producer.on('transportclose', () => {
+                    producer.close()
+                })
+            })
+            .catch((reason) => {
+                console.error(reason)
+            })
     }
 }
