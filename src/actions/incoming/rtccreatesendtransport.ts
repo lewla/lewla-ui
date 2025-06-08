@@ -102,7 +102,11 @@ export class RTCCreateSendTransportAction extends BaseAction {
                 controls.setAttribute('deafened', 'false')
                 controls.setAttribute('stats-visible', 'true')
 
-                app.rootElement?.querySelector('#footer-left-section')?.appendChild(controls)
+                const container = app.rootElement?.querySelector('#footer-left-section')
+                if (container != null) {
+                    container.innerHTML = ''
+                    container.appendChild(controls)
+                }
 
                 producer.observer.on('close', () => {
                     app.producers.delete(producer.id)
