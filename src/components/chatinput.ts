@@ -1,5 +1,6 @@
 import { MessageAction } from '../actions/outgoing/message'
 import { BaseElement } from '../classes/baseelement'
+import { unescapeHtmlChars } from '../helpers/text'
 import { app } from '../index'
 
 const templateElement = document.createElement('template')
@@ -23,6 +24,7 @@ templateElement.innerHTML = /* HTML */`
             color: var(--offwhite);
             font-size: 0.9em;
             line-height: 20px;
+            max-width: 60vw;
         }
     </style>
     <div id="chat-input" role="textbox" aria-multiline="true" spellcheck="true" aria-invalid="false" autocorrect="off" data-can-focus="true" placeholder="Enter a message" contenteditable="true" zindex="-1"></div>
@@ -62,6 +64,8 @@ export class ChatInputElement extends BaseElement {
                         return
                     }
 
+                    content = unescapeHtmlChars(content)
+
                     const message = new MessageAction(
                         app.ws,
                         {
@@ -69,7 +73,7 @@ export class ChatInputElement extends BaseElement {
                                 channel: channelId,
                                 type: 'text',
                                 body: {
-                                    text: event.target.innerHTML
+                                    text: content
                                 }
                             }
                         }
