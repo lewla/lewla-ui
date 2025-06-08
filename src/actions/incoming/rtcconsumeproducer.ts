@@ -72,12 +72,21 @@ export class RTCConsumeProducerAction extends BaseAction {
                 el.setAttribute('channelId', channelId)
                 el.volume = 0.5
                 el.autoplay = true
+
+                if (app.rootElement?.querySelector('voice-controls')?.getAttribute('deafened') === 'true') {
+                    consumer.pause()
+                }
+
                 el.srcObject = new MediaStream([consumer.track])
                 channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.shadowRoot?.querySelector('.extra')?.appendChild(el)
             }
 
             consumer.observer.on('close', () => {
                 app.consumers.delete(consumer.id)
+            })
+
+            consumer.on('transportclose', () => {
+                consumer.close()
             })
         }).catch((reason: string) => {
             console.error(reason)

@@ -4,6 +4,9 @@ import { BaseElement } from '../classes/baseelement'
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
     <style>
+        :host[hidden="true"] {
+            display: none;
+        }
         .panel {
             display: flex;
             flex-direction: column;
@@ -74,7 +77,8 @@ export class VoicePanelElement extends BaseElement {
         'current-voice-channel',
         'rtt',
         'upload-per-second',
-        'download-per-second'
+        'download-per-second',
+        'hidden'
     ]
 
     constructor () {

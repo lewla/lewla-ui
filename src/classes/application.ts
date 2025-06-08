@@ -25,11 +25,13 @@ export class Application {
     public sendTransport?: types.Transport
     public recvTransport?: types.Transport
     public consumers: Map<string, types.Consumer>
+    public producers: Map<string, types.Producer>
 
     constructor () {
         this.channels = new Map()
         this.members = new Map()
         this.consumers = new Map()
+        this.producers = new Map()
         /**
          * Map of actions that can be handled by the Client
          */
@@ -148,19 +150,7 @@ export class Application {
         footerEl.setAttribute('role', 'toolbar')
         footerEl.setAttribute('aria-orientation', 'horizontal')
         footerEl.innerHTML = /* HTML */`
-            <section class="left-section">
-                <interface-button class='round bg-none color-lightgray p-6 bg-hov-evenlighterbg'>
-                    <svg slot='icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><rect x="9" y="2" width="6" height="12" rx="3" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-width="1.5"></rect><path d="M5 10V11C5 14.866 8.13401 18 12 18V18V18C15.866 18 19 14.866 19 11V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 18V22M12 22H9M12 22H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                </interface-button>
-                <interface-button class='round bg-none color-lightgray p-6 bg-hov-evenlighterbg'>
-                    <svg slot='icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path d="M4 13.5V13C4 8.02944 7.58172 4 12 4C16.4183 4 20 8.02944 20 13V13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2 17.4382V15.5614C2 14.6436 2.62459 13.8437 3.51493 13.6211L4 13.4998L5.25448 13.1862C5.63317 13.0915 6 13.3779 6 13.7683V19.2313C6 19.6217 5.63317 19.9081 5.25448 19.8134L3.51493 19.3785C2.62459 19.1559 2 18.356 2 17.4382Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M22 17.4382V15.5614C22 14.6436 21.3754 13.8437 20.4851 13.6211L20 13.4998L18.7455 13.1862C18.3668 13.0915 18 13.3779 18 13.7683V19.2313C18 19.6217 18.3668 19.9081 18.7455 19.8134L20.4851 19.3785C21.3754 19.1559 22 18.356 22 17.4382Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                </interface-button>
-                <interface-button class='round bg-none color-lightgray p-6 bg-hov-evenlighterbg'>
-                    <svg slot='icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 10.75C12.4142 10.75 12.75 11.0858 12.75 11.5V16.5C12.75 16.9142 12.4142 17.25 12 17.25C11.5858 17.25 11.25 16.9142 11.25 16.5V11.5C11.25 11.0858 11.5858 10.75 12 10.75ZM12.5675 8.00075C12.8446 7.69287 12.8196 7.21865 12.5117 6.94156C12.2038 6.66446 11.7296 6.68942 11.4525 6.99731L11.4425 7.00842C11.1654 7.3163 11.1904 7.79052 11.4983 8.06761C11.8062 8.34471 12.2804 8.31975 12.5575 8.01186L12.5675 8.00075Z" fill="currentColor"></path></svg>
-                </interface-button>
-                <interface-button class='round bg-none color-lightgray p-6 bg-hov-evenlighterbg'>
-                    <svg slot='icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M19.6224 10.3954L18.5247 7.7448L20 6L18 4L16.2647 5.48295L13.5578 4.36974L12.9353 2H10.981L10.3491 4.40113L7.70441 5.51596L6 4L4 6L5.45337 7.78885L4.3725 10.4463L2 11V13L4.40111 13.6555L5.51575 16.2997L4 18L6 20L7.79116 18.5403L10.397 19.6123L11 22H13L13.6045 19.6132L16.2551 18.5155C16.6969 18.8313 18 20 18 20L20 18L18.5159 16.2494L19.6139 13.598L21.9999 12.9772L22 11L19.6224 10.3954Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                </interface-button>
+            <section class="left-section" id="footer-left-section">
             </section>
             <section class="middle-section">
                 <div id="chat-input-container">
@@ -174,6 +164,9 @@ export class Application {
                 </div>
             </section>
             <section class="right-section">
+                <interface-button class='round bg-none color-lightgray p-6 bg-hov-evenlighterbg'>
+                    <svg slot='icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" color="currentColor"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M19.6224 10.3954L18.5247 7.7448L20 6L18 4L16.2647 5.48295L13.5578 4.36974L12.9353 2H10.981L10.3491 4.40113L7.70441 5.51596L6 4L4 6L5.45337 7.78885L4.3725 10.4463L2 11V13L4.40111 13.6555L5.51575 16.2997L4 18L6 20L7.79116 18.5403L10.397 19.6123L11 22H13L13.6045 19.6132L16.2551 18.5155C16.6969 18.8313 18 20 18 20L20 18L18.5159 16.2494L19.6139 13.598L21.9999 12.9772L22 11L19.6224 10.3954Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </interface-button>
             </section>
         `
 
