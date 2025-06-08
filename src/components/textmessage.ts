@@ -134,7 +134,7 @@ export class TextMessageElement extends BaseElement {
         const memberEl = this.shadowRoot?.querySelector('.member')
 
         if (bodyEl instanceof HTMLElement) {
-            bodyEl.textContent = this.content.body?.text ?? ''
+            bodyEl.innerHTML = this.content.body?.text ?? ''
 
             const isMentioned = (((app.currentMember?.display_name.toLowerCase()) != null) && this.content.body?.text?.toLowerCase().includes(app.currentMember?.display_name.toLowerCase())) ?? false
 
@@ -158,7 +158,7 @@ export class TextMessageElement extends BaseElement {
                 const timestampPopover = document.createElement('div')
                 timestampPopover.id = 'timestamp-' + this.content.id
 
-                timestampPopover.innerText = new Intl.DateTimeFormat(navigator.language ?? 'en', { dateStyle: 'full', timeStyle: 'medium' }).format(date)
+                timestampPopover.innerText = new Intl.DateTimeFormat(navigator.language, { dateStyle: 'full', timeStyle: 'medium' }).format(date)
                 timestampPopover.classList.add('timestamp-tooltip')
                 timestampPopover.setAttribute('role', 'tooltip')
 
