@@ -33,6 +33,13 @@ export class ServerMember implements ServerMemberInterface {
         this._element = value
     }
 
+    public update (): void {
+        this._element?.setAttribute('status', this.status)
+        this._element?.setAttribute('display-name', this.display_name)
+        this._element?.setAttribute('avatar', this.avatar_url)
+        this.store()
+    }
+
     public store (): void {
         storeData(
             'member',
