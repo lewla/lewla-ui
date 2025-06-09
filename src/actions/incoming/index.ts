@@ -15,6 +15,7 @@ import { RTCConsumeProducerAction } from './rtcconsumeproducer'
 import { RTCNewProducerAction } from './rtcnewproducer'
 import { UnauthAction } from './unauth'
 import { RTCProducerClosedAction } from './rtcproducerclosed'
+import { MemberStatusChangeAction } from './memberstatuschange'
 
 export const actions = new Map<string, typeof BaseAction>([
     [TokenAction.identifier, TokenAction],
@@ -33,4 +34,5 @@ export const actions = new Map<string, typeof BaseAction>([
     [RTCNewProducerAction.identifier, RTCNewProducerAction],
     [UnauthAction.identifier, UnauthAction],
     [RTCProducerClosedAction.identifier, RTCProducerClosedAction],
+    [MemberStatusChangeAction.identifier, MemberStatusChangeAction],
 ])
