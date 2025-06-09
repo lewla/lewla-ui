@@ -91,6 +91,11 @@ export class Application {
         // Pass response to async actions
         if (typeof messageId === 'string' && this.requests.has(messageId)) {
             const asyncAction = this.requests.get(messageId)
+            if (typeof asyncAction?.rejector !== 'undefined' && messageAction === 'error') {
+                asyncAction.rejector(messageData)
+                this.requests.delete(messageId)
+                return
+            }
             if (typeof asyncAction?.resolver !== 'undefined') {
                 asyncAction.resolver(messageData)
                 this.requests.delete(messageId)

@@ -6,6 +6,7 @@ export class BaseAction {
     public target: WebSocket
     public id: string
     public resolver?: (value: unknown) => void
+    public rejector?: (reason: unknown) => void
 
     constructor (target: WebSocket | undefined, body: { data: any }) {
         if (target === undefined) {
@@ -33,12 +34,14 @@ export class BaseAction {
             try {
                 this.send()
                 this.resolver = resolve
+                this.rejector = reject
                 app.requests.set(this.id, this)
 
                 setTimeout(() => {
                     if (app.requests.has(this.id)) {
                         app.requests.delete(this.id)
-                        throw new Error('Request took too long to respond')
+                        const error = new Error('Request took too long to respond')
+                        reject(error)
                     }
                 }, timeout)
             } catch (error) {
