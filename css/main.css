@@ -28,8 +28,8 @@
 html,
 body {
   margin: 0;
-  height: 100vh;
-  max-height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   overflow: hidden;
   margin: 0;
   padding: 0;
