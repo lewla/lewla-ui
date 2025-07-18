@@ -1,11 +1,8 @@
 import { app } from '../../index'
 import { BaseAction } from './../base'
 import type { types } from 'mediasoup-client'
-import { Device } from 'mediasoup-client'
-import { RTCCreateSendTransportAction } from '../outgoing/rtccreatesendtransport'
-import { RTCCreateReceiveTransportAction } from '../outgoing/rtccreatereceivetransport'
 
-interface RTPCapabilitiesData {
+export interface RTPCapabilitiesData {
     rtpCapabilities: types.RtpCapabilities
     channelId: string
 }
@@ -28,19 +25,6 @@ export class RTPCapabilitiesAction extends BaseAction {
     }
 
     public async handle (): Promise<void> {
-        if (app.device === undefined) {
-            app.device = new Device()
-
-            await app.device?.load({ routerRtpCapabilities: this.body.data.rtpCapabilities }).catch((reason) => { console.error(reason) })
-        }
-
-        if (app.device?.canProduce('audio')) {
-            const createSendTransport = new RTCCreateSendTransportAction(app.ws, { data: { sctpCapabilities: app.device?.sctpCapabilities, channelId: this.body.data.channelId } })
-            createSendTransport.send()
-            const createRecvTransport = new RTCCreateReceiveTransportAction(app.ws, { data: { sctpCapabilities: app.device?.sctpCapabilities, channelId: this.body.data.channelId } })
-            createRecvTransport.send()
-        } else {
-            console.error('Cannot produce audio')
-        }
+        await app.rtc.initDevice(this.body.data)
     }
 }

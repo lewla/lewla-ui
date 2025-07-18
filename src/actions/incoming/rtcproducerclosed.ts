@@ -1,7 +1,7 @@
 import { app } from '../..'
 import { BaseAction } from './../base'
 
-interface RTCProducerClosedData {
+export interface RTCProducerClosedData {
     producerId: string
 }
 
@@ -21,17 +21,6 @@ export class RTCProducerClosedAction extends BaseAction {
     }
 
     public handle (): void {
-        const recvTransport = app.recvTransport
-
-        if (recvTransport === undefined || app.device === undefined) {
-            return
-        }
-
-        for (const consumer of app.consumers.values()) {
-            if (consumer.producerId === this.body.data.producerId) {
-                consumer.close()
-                app.consumers.delete(consumer.id)
-            }
-        }
+        app.rtc.handleProducerClosed(this.body.data.producerId)
     }
 }

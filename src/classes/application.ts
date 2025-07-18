@@ -6,7 +6,7 @@ import { type BaseAction } from '../actions/base'
 import { PingAction } from '../actions/outgoing/ping'
 import { AuthAction } from '../actions/outgoing/auth'
 import { createDB } from '../db/index'
-import type { Device, types } from 'mediasoup-client'
+import { RTC } from './rtc'
 
 /**
  * The application class
@@ -21,17 +21,11 @@ export class Application {
     public rootElement: HTMLElement | null
     public currentMember?: ServerMember
     public websocketUrl?: string
-    public device?: Device
-    public sendTransport?: types.Transport
-    public recvTransport?: types.Transport
-    public consumers: Map<string, types.Consumer>
-    public producers: Map<string, types.Producer>
+    public rtc: RTC
 
     constructor () {
         this.channels = new Map()
         this.members = new Map()
-        this.consumers = new Map()
-        this.producers = new Map()
         /**
          * Map of actions that can be handled by the Client
          */
@@ -39,6 +33,7 @@ export class Application {
         this.requests = new Map()
         this.serverName = 'lew.la official'
         this.rootElement = document.getElementById('app')
+        this.rtc = new RTC()
 
         createDB()
     }

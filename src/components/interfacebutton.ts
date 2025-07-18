@@ -46,6 +46,7 @@ templateElement.innerHTML = /* HTML */`
         /* BG Color */
         :host(.bg-accent) .button { background: var(--accent) }
         :host(.bg-warn)   .button { background: var(--warn) }
+        :host(.bg-good)   .button { background: var(--good) }
         :host(.bg-none)   .button { background: none }
         /* BG Hover Color */
         :host(.bg-hov-evenlighterbg) .button:hover { background: var(--evenlighterbg) }
@@ -55,6 +56,7 @@ templateElement.innerHTML = /* HTML */`
         :host(.color-lightgray) .button { color: var(--lightgray) }
         :host(.color-accent) .button { color: var(--accent) }
         :host(.color-warn) .button { color: var(--warn) }
+        :host(.color-good) .button { color: var(--good) }
     </style>
     <div class='button'>
         <slot name="icon"></slot>

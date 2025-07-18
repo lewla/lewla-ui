@@ -91,7 +91,6 @@ export class VoiceChannelElement extends BaseElement {
         this.shadowRoot?.querySelector('.members')?.appendChild(el)
     }
 
-    // TODO: Move this method when event system is added (show when connect to voice event is fired)
     protected displayVoicePanel (): void {
         Array.from(document.getElementsByTagName('voice-panel')).forEach(el => { el.remove() })
 
@@ -116,8 +115,8 @@ export class VoiceChannelElement extends BaseElement {
             return
         }
 
-        app.sendTransport?.close()
-        app.recvTransport?.close()
+        app.rtc.sendTransport?.close()
+        app.rtc.recvTransport?.close()
 
         const connect = new VoiceConnectAction(
             app.ws,

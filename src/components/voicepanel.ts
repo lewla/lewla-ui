@@ -93,8 +93,8 @@ export class VoicePanelElement extends BaseElement {
         let prevTimestamp: number
 
         setInterval(() => {
-            if (app.recvTransport?.connectionState === 'connected') {
-                app.recvTransport?.getStats().then((report) => {
+            if (app.rtc.recvTransport?.connectionState === 'connected') {
+                app.rtc.recvTransport?.getStats().then((report) => {
                     report.forEach((value, key) => {
                         if (value.type === 'transport') {
                             if (prevBytes !== undefined && prevTimestamp !== undefined) {
@@ -123,8 +123,8 @@ export class VoicePanelElement extends BaseElement {
         let prevTimestamp: number
 
         setInterval(() => {
-            if (app.sendTransport?.connectionState === 'connected') {
-                app.sendTransport?.getStats().then((report) => {
+            if (app.rtc.sendTransport?.connectionState === 'connected') {
+                app.rtc.sendTransport?.getStats().then((report) => {
                     report.forEach((value, key) => {
                         if (value.type === 'transport') {
                             if (prevBytes !== undefined && prevTimestamp !== undefined) {
