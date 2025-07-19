@@ -12,6 +12,7 @@ import { RTCGetProducersAction } from '../actions/outgoing/rtcgetproducers'
 import { RTCCreateSendTransportAction } from '../actions/outgoing/rtccreatesendtransport'
 import { RTCCreateReceiveTransportAction } from '../actions/outgoing/rtccreatereceivetransport'
 import { RTCTransportConsumeAction } from '../actions/outgoing/rtctransportconsume'
+import { RTCProducerCloseAction } from '../actions/outgoing/rtcproducerclose'
 
 export class RTC {
     public device?: Device
@@ -242,24 +243,31 @@ export class RTC {
                     return
                 }
 
-                const audioEls = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('audio') ?? []).filter(el => el instanceof HTMLAudioElement && el.getAttribute('memberid') === member.id)
-                audioEls.forEach((audioEl) => {
-                    audioEl.pause()
-                    audioEl.remove()
-                })
+                if (consumer.kind === 'audio') {
+                    const audioEls = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('audio') ?? []).filter(el => el instanceof HTMLAudioElement && el.getAttribute('member') === member.id)
+                    audioEls.forEach((audioEl) => {
+                        audioEl.pause()
+                        audioEl.remove()
+                    })
 
-                const el = document.createElement('audio')
-                el.setAttribute('memberId', memberId)
-                el.setAttribute('channelId', channelId)
-                el.volume = 0.5
-                el.autoplay = true
+                    const el = document.createElement('audio')
+                    el.setAttribute('member', memberId)
+                    el.setAttribute('channelId', channelId)
+                    el.volume = 0.5
+                    el.autoplay = true
 
-                if (app.rootElement?.querySelector('voice-controls')?.getAttribute('deafened') === 'true') {
-                    consumer.pause()
+                    if (app.rootElement?.querySelector('voice-controls')?.getAttribute('deafened') === 'true') {
+                        consumer.pause()
+                    }
+
+                    el.srcObject = new MediaStream([consumer.track])
+                    channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.shadowRoot?.querySelector('.extra')?.appendChild(el)
                 }
 
-                el.srcObject = new MediaStream([consumer.track])
-                channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.shadowRoot?.querySelector('.extra')?.appendChild(el)
+                consumer.track.addEventListener('ended', () => {
+                    consumer.close()
+                    this.consumers.delete(consumer.id)
+                })
             }
 
             consumer.observer.on('close', () => {
@@ -282,10 +290,14 @@ export class RTC {
         if (this.localScreenShare.video !== undefined) {
             this.producers.delete(this.localScreenShare.video.producer.id)
             this.localScreenShare.video.producer.close()
+            const closeProducer = new RTCProducerCloseAction(app.ws, { data: { producerId: this.localScreenShare.video.producer.id } })
+            closeProducer.send()
         }
         if (this.localScreenShare.audio !== undefined) {
             this.producers.delete(this.localScreenShare.audio.producer.id)
             this.localScreenShare.audio.producer.close()
+            const closeProducer = new RTCProducerCloseAction(app.ws, { data: { producerId: this.localScreenShare.audio.producer.id } })
+            closeProducer.send()
         }
 
         app.rootElement?.dispatchEvent(new CustomEvent('localstreamended'))
@@ -303,6 +315,9 @@ export class RTC {
 
                     const audioTrack = stream.getAudioTracks()[0]
                     const videoTrack = stream.getVideoTracks()[0]
+
+                    audioTrack?.addEventListener('ended', () => { this.stopScreenShare() })
+                    videoTrack?.addEventListener('ended', () => { this.stopScreenShare() })
 
                     if (audioTrack !== undefined) {
                         this.sendTransport?.produce({ track: audioTrack })

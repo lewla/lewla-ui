@@ -1,8 +1,10 @@
+import { app } from '..'
 import type { TextChannelElement } from '../components/textchannel'
 import type { VoiceChannelElement } from '../components/voicechannel'
 import { storeData } from '../db/index'
 import type { Channel as ChannelInterface } from '../interfaces/channel'
 import type { Message as MessageInterface } from '../interfaces/message'
+import type { ServerMember } from './servermember'
 
 export class Channel implements ChannelInterface {
     public id: string
@@ -10,7 +12,7 @@ export class Channel implements ChannelInterface {
     public type: 'text' | 'voice'
     public order: number
     public messages: Map<string, MessageInterface>
-    public members: string[]
+    public members: Map<string, ServerMember>
 
     private _element?: TextChannelElement | VoiceChannelElement
 
@@ -20,7 +22,14 @@ export class Channel implements ChannelInterface {
         this.type = channel.type
         this.order = channel.order
         this.messages = messages ?? new Map()
-        this.members = members ?? []
+        this.members = new Map()
+
+        members?.forEach((id) => {
+            const member = app.members.get(id)
+            if (member !== undefined) {
+                this.members.set(member.id, member)
+            }
+        })
 
         if (element !== undefined) this._element = element
     }

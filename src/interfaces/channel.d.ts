@@ -3,5 +3,4 @@ export interface Channel {
     type: 'text' | 'voice'
     name: string
     order: number
-    members: string[]
 }

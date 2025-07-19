@@ -28,10 +28,7 @@ export class VoiceConnectAction extends BaseAction {
         const member = app.members.get(this.body.data.member)
         const channel = app.channels.get(this.body.data.channel)
 
-        if (member === undefined) {
-            return
-        }
-        if (channel === undefined) {
+        if (member === undefined || channel === undefined) {
             return
         }
 
@@ -40,5 +37,7 @@ export class VoiceConnectAction extends BaseAction {
 
         const el = new VoiceMemberElement(member)
         channel.element?.shadowRoot?.querySelector('.members')?.appendChild(el)
+
+        channel.members.set(member.id, member)
     }
 }

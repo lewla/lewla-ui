@@ -2,7 +2,10 @@ import { VoiceConnectAction } from '../actions/outgoing/voiceconnect'
 import { BaseElement } from '../classes/baseelement'
 import { app } from '../index'
 import type { Channel as ChannelInterface } from '../interfaces/channel'
+import type { Channel } from '../objects/channel'
+import type { ServerMember } from '../objects/servermember'
 import { VoiceMemberElement } from './voicemember'
+import { VoiceOverviewElement } from './voiceoverview'
 import { VoicePanelElement } from './voicepanel'
 
 const templateElement = document.createElement('template')
@@ -62,6 +65,7 @@ export class VoiceChannelElement extends BaseElement {
     ]
 
     public connection?: RTCPeerConnection
+    public channel?: Channel
 
     constructor (channel?: ChannelInterface) {
         super(templateElement)
@@ -70,17 +74,21 @@ export class VoiceChannelElement extends BaseElement {
             this.setAttribute('display-name', channel.name)
             this.setAttribute('order', channel.order.toString())
             this.setAttribute('id', channel.id)
-            channel.members.forEach(memberId => { this.addVoiceMember(memberId) })
+
+            this.channel = app.channels.get(channel.id)
+            this.channel?.members.forEach(member => { this.addVoiceMember(member) })
         }
         this.shadowRoot?.querySelector('.channel')?.addEventListener('click', (ev) => {
-            this.setActive()
-            this.connect()
+            if (this.getAttribute('selected') !== 'true') {
+                this.setActive()
+                this.connect()
+            } else {
+                this.showOverview()
+            }
         })
     }
 
-    addVoiceMember (memberId: string): void {
-        const member = app.members.get(memberId)
-
+    addVoiceMember (member: ServerMember): void {
         if (member === undefined) {
             return
         }
@@ -103,6 +111,8 @@ export class VoiceChannelElement extends BaseElement {
 
     setActive (): void {
         window.localStorage.setItem('selected-voice-channel', this.getAttribute('id') ?? '')
+
+        app.rootElement?.querySelectorAll('voice-overview').forEach((el) => { el.remove() })
 
         const voiceChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('voice-channel') ?? []).filter(el => el instanceof VoiceChannelElement)
         voiceChannels.forEach(el => { this === el ? el.setAttribute('selected', 'true') : el.removeAttribute('selected') })
@@ -127,6 +137,12 @@ export class VoiceChannelElement extends BaseElement {
             }
         )
         connect.send()
+    }
+
+    showOverview (): void {
+        const overview = new VoiceOverviewElement(this.channel)
+        app.rootElement?.querySelectorAll('voice-overview').forEach((el) => { el.remove() })
+        app.rootElement?.querySelector('main .middle-section')?.appendChild(overview)
     }
 }
 

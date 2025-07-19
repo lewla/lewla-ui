@@ -1,6 +1,7 @@
 import { BaseElement } from '../classes/baseelement'
 import { MessageListElement } from './messagelist'
 import type { Channel as ChannelInterface } from '../interfaces/channel'
+import { app } from '..'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
@@ -90,6 +91,8 @@ export class TextChannelElement extends BaseElement {
 
     setActive (): void {
         window.localStorage.setItem('selected-text-channel', this.getAttribute('id') ?? '')
+
+        app.rootElement?.querySelectorAll('voice-overview').forEach((el) => { el.remove() })
 
         const textChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('text-channel') ?? []).filter(el => el instanceof TextChannelElement)
         textChannels.forEach(el => { this === el ? el.setAttribute('selected', 'true') : el.removeAttribute('selected') })

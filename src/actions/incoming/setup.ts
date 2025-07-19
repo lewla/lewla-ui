@@ -29,15 +29,15 @@ export class SetupAction extends BaseAction {
     }
 
     public handle (): void {
-        this.body.data.channels.forEach((data) => {
-            const channel = new Channel(data)
-            app.channels.set(channel.id, channel)
-            channel.store()
-        })
         this.body.data.members.forEach((data) => {
             const member = new ServerMember(data)
             app.members.set(member.id, member)
             member.store()
+        })
+        this.body.data.channels.forEach((data) => {
+            const channel = new Channel(data)
+            app.channels.set(channel.id, channel)
+            channel.store()
         })
         this.body.data.messages.forEach((data) => {
             const message = new Message(data)
@@ -48,16 +48,11 @@ export class SetupAction extends BaseAction {
             const member = app.members.get(data.member)
             const channel = app.channels.get(data.channel)
 
-            if (member === undefined) {
-                return
-            }
-            if (channel === undefined) {
+            if (member === undefined || channel === undefined) {
                 return
             }
 
-            if (!channel.members.includes(member.id)) {
-                channel.members.push(member.id)
-            }
+            channel.members.set(member.id, member)
         })
 
         caches.open('avatars').then((cache) => {

@@ -110,7 +110,7 @@ export class VoicePanelElement extends BaseElement {
                         }
                     })
                 }).catch((reason) => {
-                    console.log(reason)
+                    console.debug(reason)
                 })
             } else {
                 this.setAttribute('download-per-second', `${(0).toFixed(1)} kb/s`)
@@ -140,7 +140,7 @@ export class VoicePanelElement extends BaseElement {
                         }
                     })
                 }).catch((reason) => {
-                    console.log(reason)
+                    console.debug(reason)
                 })
             } else {
                 this.setAttribute('upload-per-second', `${(0).toFixed(1)} kb/s`)
