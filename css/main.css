@@ -85,12 +85,13 @@ main {
   flex-wrap: nowrap;
   height: 0;
   flex-grow: 1;
+  justify-content: space-between;
+  position: relative;
 }
 
 main .channels {
-  flex-basis: 20%;
-  max-width: 280px;
   overflow: auto;
+  max-width: 280px;
 }
 
 main .messages {
@@ -99,12 +100,12 @@ main .messages {
   overflow: hidden;
   flex-basis: 100%;
   display: flex;
+  position: relative;
 }
 
 main .members {
-  flex-basis: 20%;
-  max-width: 280px;
   overflow: auto;
+  max-width: 280px;
 }
 
 .channels,
@@ -112,18 +113,44 @@ main .members {
   background: var(--dark);
 }
 
-main .left-section {
+main .left-section.open {
   border-right: 2px solid var(--darker);
+  min-width: 120px;
+  flex-basis: 100%;
+}
+
+main .right-section.open {
+  border-left: 2px solid var(--darker);
+  min-width: 120px;
+  flex-basis: 100%;
+}
+
+main .left-section {
   display: flex;
   flex-direction: column;
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  flex-basis: 0%;
+  border-right: 2px solid var(--darker);
   min-width: 120px;
+  flex-basis: 20%;
 }
 
 main .right-section {
-  border-left: 2px solid var(--darker);
   display: flex;
   flex-direction: column;
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  flex-basis: 0%;
+  border-left: 2px solid var(--darker);
   min-width: 120px;
+  flex-basis: 20%;
 }
 
 .section-heading {
@@ -256,4 +283,37 @@ button {
 
 button:hover {
   background: var(--evenlighterbg);
+}
+
+
+
+@media screen and (max-width: 700px) {
+  main .left-section {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 5;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+    max-width: 80%;
+  }
+
+  main .right-section {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 5;
+    right: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s;
+    max-width: 80%;
+  }
+
+  main .left-section.open {
+    transform: translateX(0);
+  }
+    main .right-section.open {
+    transform: translateX(0);
+  }
 }

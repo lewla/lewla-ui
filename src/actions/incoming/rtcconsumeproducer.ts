@@ -2,11 +2,11 @@ import { app } from '../..'
 import { BaseAction } from './../base'
 import type { types } from 'mediasoup-client'
 
-interface RTCConsumeProducerData {
+export interface RTCConsumeProducerData {
     id: string
     rtpParameters: types.RtpParameters
     producerId: string
-    kind: 'audio' | 'video'
+    kind: types.MediaKind
     appData: types.AppData
 }
 
@@ -30,66 +30,6 @@ export class RTCConsumeProducerAction extends BaseAction {
     }
 
     public handle (): void {
-        const recvTransport = app.recvTransport
-
-        if (recvTransport === undefined) {
-            return
-        }
-
-        recvTransport.consume({
-            id: this.body.data.id,
-            producerId: this.body.data.producerId,
-            rtpParameters: this.body.data.rtpParameters,
-            kind: this.body.data.kind,
-            appData: this.body.data.appData
-        }).then((consumer) => {
-            consumer.resume()
-
-            app.consumers.set(consumer.id, consumer)
-
-            const channelId = consumer.appData?.channelId
-            const memberId = consumer.appData?.memberId
-
-            if (typeof channelId === 'string' && typeof memberId === 'string') {
-                const channel = app.channels.get(channelId)
-                const member = app.members.get(memberId)
-
-                if (member === undefined) {
-                    return
-                }
-                if (channel === undefined) {
-                    return
-                }
-
-                const audioEls = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('audio') ?? []).filter(el => el instanceof HTMLAudioElement && el.getAttribute('memberid') === member.id)
-                audioEls.forEach((audioEl) => {
-                    audioEl.pause()
-                    audioEl.remove()
-                })
-
-                const el = document.createElement('audio')
-                el.setAttribute('memberId', memberId)
-                el.setAttribute('channelId', channelId)
-                el.volume = 0.5
-                el.autoplay = true
-
-                if (app.rootElement?.querySelector('voice-controls')?.getAttribute('deafened') === 'true') {
-                    consumer.pause()
-                }
-
-                el.srcObject = new MediaStream([consumer.track])
-                channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.shadowRoot?.querySelector('.extra')?.appendChild(el)
-            }
-
-            consumer.observer.on('close', () => {
-                app.consumers.delete(consumer.id)
-            })
-
-            consumer.on('transportclose', () => {
-                consumer.close()
-            })
-        }).catch((reason: string) => {
-            console.error(reason)
-        })
+        app.rtc.consumerProducer(this.body.data)
     }
 }

@@ -6,7 +6,7 @@ import { type BaseAction } from '../actions/base'
 import { PingAction } from '../actions/outgoing/ping'
 import { AuthAction } from '../actions/outgoing/auth'
 import { createDB } from '../db/index'
-import type { Device, types } from 'mediasoup-client'
+import { RTC } from './rtc'
 
 /**
  * The application class
@@ -21,17 +21,11 @@ export class Application {
     public rootElement: HTMLElement | null
     public currentMember?: ServerMember
     public websocketUrl?: string
-    public device?: Device
-    public sendTransport?: types.Transport
-    public recvTransport?: types.Transport
-    public consumers: Map<string, types.Consumer>
-    public producers: Map<string, types.Producer>
+    public rtc: RTC
 
     constructor () {
         this.channels = new Map()
         this.members = new Map()
-        this.consumers = new Map()
-        this.producers = new Map()
         /**
          * Map of actions that can be handled by the Client
          */
@@ -39,6 +33,7 @@ export class Application {
         this.requests = new Map()
         this.serverName = 'lew.la official'
         this.rootElement = document.getElementById('app')
+        this.rtc = new RTC()
 
         createDB()
     }
@@ -194,5 +189,62 @@ export class Application {
 
         document.querySelector('section.channels')?.appendChild(channelList)
         document.querySelector('section.members')?.appendChild(memberList)
+
+        /* Setup touch events */
+        let touchStartX = 0
+        let touchStartY = 0
+        let touchStartTime = 0
+
+        this.rootElement?.addEventListener(
+            'touchstart',
+            (event) => {
+                const touch = event.changedTouches[0]
+                touchStartX = touch.screenX
+                touchStartY = touch.screenY
+                touchStartTime = Date.now()
+            },
+            false
+        )
+
+        this.rootElement?.addEventListener(
+            'touchend',
+            (event) => {
+                const touch = event.changedTouches[0]
+                const dx = touch.screenX - touchStartX
+                const dy = touch.screenY - touchStartY
+                const distance = Math.sqrt(dx * dx + dy * dy)
+                const duration = Date.now() - touchStartTime
+
+                if (distance >= 20 && duration <= 2000) {
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        dx > 0 ? this.handleSwipe('right') : this.handleSwipe('left')
+                    } else {
+                        dy > 0 ? this.handleSwipe('down') : this.handleSwipe('up')
+                    }
+                }
+            }
+        )
+    }
+
+    handleSwipe (direction: 'left' | 'right' | 'up' | 'down'): void {
+        const channelsEl = document.querySelector('section.channels')
+        const membersEl = document.querySelector('section.members')
+
+        if (membersEl === null || channelsEl === null) { return }
+
+        if (direction === 'right') {
+            if (membersEl.classList.contains('open')) {
+                membersEl.classList.remove('open')
+            } else if (!channelsEl.classList.contains('open')) {
+                channelsEl.classList.add('open')
+            }
+        }
+        if (direction === 'left') {
+            if (channelsEl.classList.contains('open')) {
+                channelsEl.classList.remove('open')
+            } else if (!membersEl.classList.contains('open')) {
+                membersEl.classList.add('open')
+            }
+        }
     }
 }

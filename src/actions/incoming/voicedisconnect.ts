@@ -27,14 +27,13 @@ export class VoiceDisconnectAction extends BaseAction {
         const member = app.members.get(this.body.data.member)
         const channel = app.channels.get(this.body.data.channel)
 
-        if (member === undefined) {
-            return
-        }
-        if (channel === undefined) {
+        if (member === undefined || channel === undefined) {
             return
         }
 
         const voiceChannels = Array.from(document.querySelector('section.channels channel-list')?.shadowRoot?.querySelectorAll('voice-channel') ?? []).filter(el => el instanceof VoiceChannelElement)
         voiceChannels.forEach(voiceChannel => { voiceChannel?.shadowRoot?.querySelectorAll('.members voice-member[id="' + member.id + '"]').forEach(voiceMember => { voiceMember.remove() }) })
+
+        channel.members.delete(member.id)
     }
 }
