@@ -18,6 +18,12 @@ templateElement.innerHTML = /* HTML */`
             border-radius: 3px;
             user-select: none;
             position: relative;
+            border-right: 3px solid transparent;
+            transition: 0.2s;
+        }
+        :host([speaking="true"]) .member {
+            border-color: var(--good);
+            box-shadow: inset 0px 0px 20px 20px #86db371c;
         }
         .member:hover {
             background: var(--lightbg);

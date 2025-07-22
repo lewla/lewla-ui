@@ -80,7 +80,6 @@ export class VoiceOverviewElement extends BaseElement {
         })
 
         app.rtc.consumers.forEach((consumer) => {
-            console.log(consumer)
             if (consumer.kind === 'video' && consumer.appData?.channelId === this.channel?.id) {
                 const stream = new MediaStream([consumer.track])
                 const el = new MemberVideoElement(stream)
