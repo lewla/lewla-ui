@@ -170,9 +170,12 @@ export class RTC {
                 controls.setAttribute('deafened', 'false')
                 controls.setAttribute('stats-visible', 'true')
 
-                if (this.currentChannel?.id !== undefined) {
-                    controls.setAttribute('channel', this.currentChannel.id)
+                if (this.currentChannel === null) {
+                    return
                 }
+
+                const channel = app.channels.get(this.currentChannel.id)
+                controls.setAttribute('channel', this.currentChannel.id)
 
                 const container = app.rootElement?.querySelector('#footer-left-section')
                 if (container != null) {
@@ -183,6 +186,27 @@ export class RTC {
                 producer.observer.on('close', () => {
                     this.producers.delete(producer.id)
                 })
+
+                const audioContext = new AudioContext()
+                const analyser = audioContext.createAnalyser()
+                const source = audioContext.createMediaStreamSource(stream)
+                source.connect(analyser)
+
+                setInterval(() => {
+                    const data = new Float32Array(analyser.fftSize)
+                    analyser.getFloatTimeDomainData(data)
+                    let sum = 0
+                    for (let i = 0; i < data.length; i++) {
+                        sum += data[i] * data[i]
+                    }
+                    const volume = Math.sqrt(sum / data.length)
+
+                    if (volume > 0.0005) {
+                        channel?.element?.shadowRoot?.querySelector('.members voice-member[id="' + app.currentMember?.id + '"]')?.setAttribute('speaking', 'true')
+                    } else {
+                        channel?.element?.shadowRoot?.querySelector('.members voice-member[id="' + app.currentMember?.id + '"]')?.removeAttribute('speaking')
+                    }
+                }, 150)
             })
             .catch((reason) => {
                 console.error(reason)
@@ -262,21 +286,24 @@ export class RTC {
 
                     el.srcObject = new MediaStream([consumer.track])
                     channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.shadowRoot?.querySelector('.extra')?.appendChild(el)
-                }
 
-                consumer.track.addEventListener('ended', () => {
-                    consumer.close()
-                    this.consumers.delete(consumer.id)
-                })
+                    const speechIndicator = setInterval(() => {
+                        if (consumer.closed) {
+                            clearInterval(speechIndicator)
+                            channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.removeAttribute('speaking')
+                        }
+                        consumer.rtpReceiver?.getSynchronizationSources().forEach((source) => {
+                            if ((source.audioLevel ?? 0) > 0.0005) {
+                                channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.setAttribute('speaking', 'true')
+                            } else {
+                                channel.element?.shadowRoot?.querySelector('.members voice-member[id="' + member.id + '"]')?.removeAttribute('speaking')
+                            }
+                        })
+                    }, 150)
+                }
             }
 
-            consumer.observer.on('close', () => {
-                this.consumers.delete(consumer.id)
-            })
-
-            consumer.on('transportclose', () => {
-                consumer.close()
-            })
+            consumer.observer.on('close', () => { consumer.close() })
         }).catch((reason: string) => {
             console.error(reason)
         })
@@ -351,5 +378,10 @@ export class RTC {
                     console.error(reason)
                 })
         })
+    }
+
+    cleanupProducer (producer: types.Producer): void {
+        producer.close()
+        this.producers.delete(producer.id)
     }
 }
