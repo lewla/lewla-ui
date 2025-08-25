@@ -1,15 +1,15 @@
 import { BaseAction } from '../base'
 
-interface LoginData {
+export interface Payload {
     username: string
     password: string
 }
 
 export class LoginAction extends BaseAction {
     public static identifier = 'login'
-    public body: { data: LoginData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: LoginData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

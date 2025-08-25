@@ -1,4 +1,5 @@
-import type { ServerMemberElement } from '../components/servermember'
+import { MemberListElement } from '../components'
+import { ServerMemberElement } from '../components/servermember'
 import { storeData } from '../db/index'
 import type { ServerMember as ServerMemberInterface } from '../interfaces/servermember'
 
@@ -53,5 +54,14 @@ export class ServerMember implements ServerMemberInterface {
         ).catch((error) => {
             console.error(error)
         })
+    }
+
+    public display (): void {
+        this.element = new ServerMemberElement(this)
+        const memberList = document.querySelector('member-list')
+
+        if (memberList instanceof MemberListElement) {
+            memberList.addItem(this.element)
+        }
     }
 }

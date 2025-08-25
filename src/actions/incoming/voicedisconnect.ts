@@ -2,16 +2,16 @@ import { VoiceChannelElement } from '../../components/voicechannel'
 import { app } from '../../index'
 import { BaseAction } from './../base'
 
-interface VoiceDisconnectData {
+export interface Payload {
     member: string
     channel: string
 }
 
 export class VoiceDisconnectAction extends BaseAction {
     public static identifier = 'voicedisconnect'
-    public body: { data: VoiceDisconnectData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: VoiceDisconnectData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

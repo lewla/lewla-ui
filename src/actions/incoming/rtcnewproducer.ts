@@ -2,7 +2,7 @@ import { app } from '../..'
 import { BaseAction } from './../base'
 import type { types } from 'mediasoup-client'
 
-export interface RTCNewProducerData {
+export interface Payload {
     producerId: string
     rtpParameters: types.RtpParameters
     memberId: string
@@ -11,9 +11,9 @@ export interface RTCNewProducerData {
 
 export class RTCNewProducerAction extends BaseAction {
     public static identifier = 'rtcnewproducer'
-    public body: { data: RTCNewProducerData }
+    public body: { data: Payload }
 
-    constructor (sender: WebSocket | undefined, body: { data: RTCNewProducerData }, id?: string) {
+    constructor (sender: WebSocket | undefined, body: { data: Payload }, id?: string) {
         super(sender, body)
         this.body = body
 

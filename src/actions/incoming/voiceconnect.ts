@@ -3,16 +3,16 @@ import { VoiceMemberElement } from '../../components/voicemember'
 import { app } from '../../index'
 import { BaseAction } from './../base'
 
-interface VoiceConnectData {
+export interface Payload {
     member: string
     channel: string
 }
 
 export class VoiceConnectAction extends BaseAction {
     public static identifier = 'voiceconnect'
-    public body: { data: VoiceConnectData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: VoiceConnectData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

@@ -1,15 +1,15 @@
 import { BaseAction } from '../base'
 
-interface RegisterData {
+export interface Payload {
     username: string
     password: string
 }
 
 export class RegisterAction extends BaseAction {
     public static identifier = 'register'
-    public body: { data: RegisterData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: RegisterData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

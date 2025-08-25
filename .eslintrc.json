@@ -29,6 +29,8 @@
 		]
 	},
 	"ignorePatterns": [
-		"webpack.config.cjs"
+		"webpack.config.cjs",
+		"plop-templates/*.js",
+		"plopfile*.js"
 	]
 }

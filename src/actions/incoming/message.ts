@@ -2,7 +2,7 @@ import { Message } from '../../objects/message'
 import { app } from '../../index'
 import { BaseAction } from './../base'
 
-export interface MessageData {
+export interface Payload {
     id: string
     timestamp: string
     member: string
@@ -19,9 +19,9 @@ export interface MessageData {
 
 export class MessageAction extends BaseAction {
     public static identifier = 'message'
-    public body: { data: MessageData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: MessageData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

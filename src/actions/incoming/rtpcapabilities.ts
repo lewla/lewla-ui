@@ -2,16 +2,16 @@ import { app } from '../../index'
 import { BaseAction } from './../base'
 import type { types } from 'mediasoup-client'
 
-export interface RTPCapabilitiesData {
+export interface Payload {
     rtpCapabilities: types.RtpCapabilities
     channelId: string
 }
 
 export class RTPCapabilitiesAction extends BaseAction {
     public static identifier = 'rtpcapabilities'
-    public body: { data: RTPCapabilitiesData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: RTPCapabilitiesData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

@@ -1,14 +1,14 @@
 import { BaseAction } from './../base'
 
-interface ErrorData {
+export interface Payload {
     message: string
 }
 
 export class ErrorAction extends BaseAction {
     public static identifier = 'error'
-    public body: { data: ErrorData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: ErrorData }, id?: string) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }, id?: string) {
         super(target, body)
         this.body = body
 

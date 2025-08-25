@@ -1,16 +1,16 @@
 import { app } from '../../index'
 import { BaseAction } from './../base'
 
-interface MemberStatusChangeData {
+export interface Payload {
     member: string
     status: 'online' | 'offline' | 'busy' | 'away'
 }
 
 export class MemberStatusChangeAction extends BaseAction {
     public static identifier = 'memberstatuschange'
-    public body: { data: MemberStatusChangeData }
+    public body: { data: Payload }
 
-    constructor (sender: WebSocket, body: { data: MemberStatusChangeData }) {
+    constructor (sender: WebSocket, body: { data: Payload }) {
         super(sender, body)
         this.body = body
 

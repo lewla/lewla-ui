@@ -1,11 +1,12 @@
-import { BaseAction } from './../base'
+import { app } from './../../index'
+import { BaseAction } from '../base'
 
 export interface Payload {
-    message: string
+    example: any
 }
 
-export class SuccessAction extends BaseAction {
-    public static identifier = 'success'
+export class {{ pascalCase name }}Action extends BaseAction {
+    public static identifier = '{{ lowercase name }}'
     public body: { data: Payload }
 
     constructor (target: WebSocket | undefined, body: { data: Payload }, id?: string) {
@@ -13,13 +14,13 @@ export class SuccessAction extends BaseAction {
         this.body = body
 
         if (
-            typeof this.body.data.message !== 'string'
+            this.body.data.example === undefined
         ) {
             throw new Error('Invalid payload')
         }
     }
 
     public handle (): void {
-        console.info(this.body.data.message)
+        console.debug(this.body.data)
     }
 }
