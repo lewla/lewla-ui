@@ -2,6 +2,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
+const dotenv = require('dotenv');
+
+dotenv.config()
 
 const isProduction = process.env.NODE_ENV == 'production';
 
@@ -20,6 +24,9 @@ const config = {
               { from: "src/css", to: "css" },
             ],
         }),
+        new webpack.DefinePlugin({
+            'process.env.WEBSOCKET_SERVER_URL': JSON.stringify(process.env.WEBSOCKET_SERVER_URL || 'ws://127.0.0.1:8280')
+        })
     ],
     module: {
         rules: [
