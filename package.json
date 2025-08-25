@@ -30,6 +30,7 @@
     "workbox-webpack-plugin": "^7.1.0"
   },
   "dependencies": {
+    "dotenv": "^17.2.1",
     "mediasoup-client": "^3.7.14"
   }
 }

@@ -49,7 +49,7 @@ templateElement.innerHTML = /* HTML */`
     <div class="form-section custom-server">
         <h2>Join custom server</h2>
         <form id="server-connect-form">
-            <input type="text" placeholder="ws://127.0.0.1:8280" id='server-url-input'>
+            <input type="text" placeholder="WebSocket URL" id='server-url-input'>
             <input type="submit" class="form-button" id="server-url-submit" value="Connect">
         </form>
     </div>
@@ -81,7 +81,7 @@ export class ServerConnectFormElement extends BaseElement {
             }
         })
 
-        this.shadowRoot?.getElementById('join-official-server-button')?.addEventListener('click', (event) => { app.connect('ws://127.0.0.1:8280') })
+        this.shadowRoot?.getElementById('join-official-server-button')?.addEventListener('click', (event) => { app.connect(process.env.WEBSOCKET_SERVER_URL ?? 'ws://127.0.0.1:8280') })
     }
 }
 
