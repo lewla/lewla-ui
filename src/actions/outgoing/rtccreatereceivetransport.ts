@@ -1,16 +1,16 @@
 import { BaseAction } from '../base'
 import type { types } from 'mediasoup-client'
 
-interface RTCCreateTransportData {
+export interface Payload {
     sctpCapabilities: types.SctpCapabilities
     channelId: string
 }
 
 export class RTCCreateReceiveTransportAction extends BaseAction {
     public static identifier = 'rtccreatereceivetransport'
-    public body: { data: RTCCreateTransportData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: RTCCreateTransportData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

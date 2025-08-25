@@ -12,12 +12,12 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: './src/index.html',
         }),
         new CopyPlugin({
             patterns: [
-              { from: "resources", to: "resources" },
-              { from: "css", to: "css" },
+              { from: "src/resources", to: "resources" },
+              { from: "src/css", to: "css" },
             ],
         }),
     ],

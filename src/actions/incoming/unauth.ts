@@ -1,15 +1,15 @@
 import { app } from '../..'
 import { BaseAction } from './../base'
 
-interface UnauthData {
+export interface Payload {
     message: string
 }
 
 export class UnauthAction extends BaseAction {
     public static identifier = 'unauth'
-    public body: { data: UnauthData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: UnauthData }, id?: string) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }, id?: string) {
         super(target, body)
         this.body = body
 

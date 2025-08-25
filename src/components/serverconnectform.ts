@@ -27,6 +27,7 @@ templateElement.innerHTML = /* HTML */`
             border: none;
             background: var(--lightbg);
             color: var(--white);
+            font-size: 16px;
         }
         .form-button {
             margin: 6px 0 0 0;

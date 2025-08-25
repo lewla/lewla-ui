@@ -1,15 +1,15 @@
 import { AuthAction } from '../outgoing/auth'
 import { BaseAction } from './../base'
 
-interface TokenData {
+export interface Payload {
     token: string
 }
 
 export class TokenAction extends BaseAction {
     public static identifier = 'token'
-    public body: { data: TokenData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: TokenData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

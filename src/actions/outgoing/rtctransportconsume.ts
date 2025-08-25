@@ -1,7 +1,7 @@
 import { BaseAction } from './../base'
 import type { types } from 'mediasoup-client'
 
-interface RTCTransportConsumeData {
+export interface Payload {
     transportId: string
     producerId: string
     rtpCapabilities: types.RtpCapabilities
@@ -10,9 +10,9 @@ interface RTCTransportConsumeData {
 
 export class RTCTransportConsumeAction extends BaseAction {
     public static identifier = 'rtctransportconsume'
-    public body: { data: RTCTransportConsumeData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: RTCTransportConsumeData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

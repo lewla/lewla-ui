@@ -36,6 +36,8 @@ body {
   background: var(--bg);
   color: var(--white);
   accent-color: var(--accent);
+  position: fixed;
+  width: 100%;
 }
 
 h1,
@@ -165,7 +167,7 @@ footer {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  padding: 5px;
+  padding: 20px 5px 30px 5px;
   justify-content: space-between;
 }
 

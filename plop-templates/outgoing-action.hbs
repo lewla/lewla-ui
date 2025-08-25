@@ -1,11 +1,12 @@
+import { app } from './../../index'
 import { BaseAction } from '../base'
 
-export interface Payload {
-    token: string
+interface Payload {
+    example: any
 }
 
-export class AuthAction extends BaseAction {
-    public static identifier = 'auth'
+export class {{ pascalCase name }}Action extends BaseAction {
+    public static identifier = '{{ lowercase name }}'
     public body: { data: Payload }
 
     constructor (target: WebSocket | undefined, body: { data: Payload }) {
@@ -13,7 +14,7 @@ export class AuthAction extends BaseAction {
         this.body = body
 
         if (
-            typeof this.body.data.token !== 'string'
+            this.body.data.example === undefined
         ) {
             throw new Error('Invalid payload')
         }

@@ -32,6 +32,10 @@ export class MemberListElement extends BaseElement {
             }
         )
     }
+
+    addItem (item: ServerMemberElement): void {
+        this.shadowRoot?.appendChild(item)
+    }
 }
 
 window.customElements.define('member-list', MemberListElement)

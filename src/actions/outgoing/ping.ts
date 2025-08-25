@@ -1,14 +1,14 @@
 import { BaseAction } from './../base'
 
-interface PingData {
+export interface Payload {
     timestamp: number
 }
 
 export class PingAction extends BaseAction {
     public static identifier = 'ping'
-    public body: { data: PingData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: PingData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

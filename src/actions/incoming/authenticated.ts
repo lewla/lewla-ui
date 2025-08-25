@@ -1,7 +1,7 @@
 import { app } from './../../index'
 import { BaseAction } from '../base'
 
-interface AuthenticatedData {
+export interface Payload {
     member: {
         id: string
         username: string
@@ -13,9 +13,9 @@ interface AuthenticatedData {
 
 export class AuthenticatedAction extends BaseAction {
     public static identifier = 'authenticated'
-    public body: { data: AuthenticatedData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: AuthenticatedData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

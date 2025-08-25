@@ -1,7 +1,7 @@
 import { BaseAction } from './../base'
 import type { types } from 'mediasoup-client'
 
-interface RTCTransportConnectData {
+export interface Payload {
     transportId: string
     dtlsParameters: types.DtlsParameters
     channelId: string
@@ -9,9 +9,9 @@ interface RTCTransportConnectData {
 
 export class RTCTransportConnectAction extends BaseAction {
     public static identifier = 'rtctransportconnect'
-    public body: { data: RTCTransportConnectData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: RTCTransportConnectData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

@@ -8,7 +8,7 @@ import { app } from '../../index'
 import { getAll } from '../../db/index'
 import { Message } from '../../objects/message'
 
-interface SetupData {
+export interface Payload {
     channels: ChannelInterface[]
     members: ServerMemberInterface[]
     messages: MessageInterface[]
@@ -21,9 +21,9 @@ interface SetupData {
 
 export class SetupAction extends BaseAction {
     public static identifier = 'setup'
-    public body: { data: SetupData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: SetupData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
     }

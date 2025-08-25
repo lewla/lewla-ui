@@ -1,14 +1,14 @@
 import { BaseAction } from './../base'
 
-interface PongData {
+export interface Payload {
     timestamp: number
 }
 
 export class PongAction extends BaseAction {
     public static identifier = 'pong'
-    public body: { data: PongData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: PongData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 

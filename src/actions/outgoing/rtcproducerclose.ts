@@ -1,14 +1,14 @@
 import { BaseAction } from './../base'
 
-interface RTCProducerCloseData {
+export interface Payload {
     producerId: string
 }
 
 export class RTCProducerCloseAction extends BaseAction {
     public static identifier = 'rtcproducerclose'
-    public body: { data: RTCProducerCloseData }
+    public body: { data: Payload }
 
-    constructor (target: WebSocket | undefined, body: { data: RTCProducerCloseData }) {
+    constructor (target: WebSocket | undefined, body: { data: Payload }) {
         super(target, body)
         this.body = body
 
