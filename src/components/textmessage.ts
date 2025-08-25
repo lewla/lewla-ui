@@ -100,7 +100,7 @@ templateElement.innerHTML = /* HTML */`
     </style>
     <div class="message" data-id="">
         <div class="left-section">
-            <img src="resources/images/256.png" class="avatar">
+            <img src="" class="avatar">
             <span class="timestamp"></span>
         </div>
         <div class="main-section">
@@ -132,6 +132,7 @@ export class TextMessageElement extends BaseElement {
         const messageEl = this.shadowRoot?.querySelector('.message')
         const bodyEl = this.shadowRoot?.querySelector('.body')
         const memberEl = this.shadowRoot?.querySelector('.member')
+        const avatarEl = this.shadowRoot?.querySelector('.avatar')
 
         if (bodyEl instanceof HTMLElement) {
             bodyEl.innerHTML = this.content.body?.text ?? ''
@@ -143,9 +144,12 @@ export class TextMessageElement extends BaseElement {
             }
         }
 
-        if (memberEl instanceof HTMLElement) {
-            if (this.content.member !== undefined) {
+        if (this.content.member !== undefined) {
+            if (memberEl instanceof HTMLElement) {
                 memberEl.textContent = app.members.get(this.getAttribute('member') ?? '')?.display_name ?? ''
+            }
+            if (avatarEl instanceof HTMLImageElement) {
+                avatarEl.src = app.members.get(this.getAttribute('member') ?? '')?.avatar_url ?? 'resources/images/256.png'
             }
         }
 

@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
 
-dotenv.config()
+dotenv.config({ quiet: true })
 
 const isProduction = process.env.NODE_ENV == 'production';
 

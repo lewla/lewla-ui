@@ -53,6 +53,7 @@ export class ChatInputElement extends BaseElement {
 
                     let content = event.target.innerHTML
                     content = content.trim()
+                    content.replace(/&nbsp;/g, '').replace(/\u00A0/g, '')
 
                     if (content.length === 0) {
                         event.preventDefault()
