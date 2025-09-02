@@ -5,6 +5,6 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:1.29-alpine AS production
-COPY --from=builder /app/dist /usr/share/nginx/html
+FROM caddy:2.10.2-alpine AS production
+COPY --from=builder /app/dist /usr/share/caddy
 EXPOSE 80
