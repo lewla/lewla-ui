@@ -26,7 +26,8 @@ const config = {
         }),
         new webpack.DefinePlugin({
             'process.env.WEBSOCKET_SERVER_URL': JSON.stringify(process.env.WEBSOCKET_SERVER_URL || 'ws://127.0.0.1:8280')
-        })
+        }),
+        new webpack.HotModuleReplacementPlugin(),
     ],
     module: {
         rules: [
@@ -55,7 +56,24 @@ const config = {
         minimizer: [new TerserPlugin({
             extractComments: false,
         })],
-    }
+    },
+    stats: 'verbose',
+    devServer: {
+        host: '0.0.0.0',
+        port: 8080,
+        hot: true,
+        static: path.resolve(__dirname, 'dist'),
+        client: {
+            logging: 'verbose',
+            overlay: true,
+            webSocketURL: 'wss://lewla.localhost/ws',
+        },
+    },
+    watchOptions: {
+        poll: 1000,
+        aggregateTimeout: 100,
+        ignored: /node_modules/,
+    },
 };
 
 module.exports = () => {
