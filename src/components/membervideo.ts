@@ -5,28 +5,32 @@ templateElement.innerHTML = /* HTML */`
     <style>
         :host {
             flex-grow: 1;
-            max-width: 800px;
-            max-height: 440px;
             min-width: 150px;
             height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            box-sizing: border-box;
         }
         .member {
             box-sizing: border-box;
             display: flex;
-            align-items: center;
             row-gap: 12px;
-            justify-content: center;
             user-select: none;
             position: relative;
             background: var(--black);
             border-radius: 10px;
-            flex-direction: column;
             box-shadow: inset 0px 0px 14px 4px #000000b0;
             height: 100%;
             overflow: hidden;
+            width: fit-content;
+        }
+        .stream-container {
+            max-height: 100%;
         }
         .stream-container video {
-            max-width: 100%;
+            max-height: 100%;
         }
     </style>
     <div class='member'>

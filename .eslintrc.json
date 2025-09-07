@@ -16,17 +16,7 @@
 		"@typescript-eslint/indent": ["error", 4],
 		"@typescript-eslint/no-useless-constructor": "off",
 		"@typescript-eslint/comma-dangle": "off",
-		"import/extensions": [
-			"error",
-			"ignorePackages",
-			{
-				"": "never",
-				"js": "never",
-				"jsx": "never",
-				"ts": "never",
-				"tsx": "never"
-			}
-		]
+		"import/extensions": "off"
 	},
 	"ignorePatterns": [
 		"webpack.config.cjs",
