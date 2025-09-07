@@ -2,7 +2,6 @@ import { app } from '..'
 import { BaseElement } from '../classes/baseelement'
 import type { Channel } from '../objects/channel'
 import { MemberVideoElement } from './membervideo'
-import { VoiceOverviewMemberElement } from './voiceoverviewmember'
 
 const templateElement = document.createElement('template')
 templateElement.innerHTML = /* HTML */`
@@ -28,6 +27,7 @@ templateElement.innerHTML = /* HTML */`
             flex-grow: 1;
             flex-wrap: wrap;
             align-content: center;
+            max-height: 100%;
         }
     </style>
     <div class='channel-overview'>
@@ -65,19 +65,6 @@ export class VoiceOverviewElement extends BaseElement {
         if (container == null || membersList == null) {
             return
         }
-
-        this.channel?.members.forEach((member) => {
-            const el = new VoiceOverviewMemberElement()
-
-            if (member === undefined) {
-                return
-            }
-
-            el.setAttribute('avatar', member.avatar_url)
-            el.setAttribute('member', member.id)
-
-            membersList.appendChild(el)
-        })
 
         app.rtc.consumers.forEach((consumer) => {
             if (consumer.kind === 'video' && consumer.appData?.channelId === this.channel?.id) {

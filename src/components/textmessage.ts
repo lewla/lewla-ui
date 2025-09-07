@@ -74,7 +74,7 @@ templateElement.innerHTML = /* HTML */`
             display: inline;
         }
         .message.mentioned {
-            background: #5893c230;
+            background: #2076ba22;
             border-left: 2px solid var(--accent);
         }
         .timestamp-tooltip {
